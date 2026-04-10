@@ -1,89 +1,200 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Catálogo Nelida 💄</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radiant Hestill 💄</title>
 
-  <style>
-    body {
-      font-family: Arial;
-      margin: 0;
-      background: #fff7f9;
-      text-align: center;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #fff0f5;
+}
 
-    header {
-      background: #e8b4b8;
-      padding: 20px;
-      color: white;
-      font-size: 28px;
-      font-weight: bold;
-    }
+/* HEADER */
+header {
+  background: linear-gradient(135deg, #f8cdda, #fbb1bd);
+  text-align: center;
+  padding: 30px;
+  color: #fff;
+  font-size: 28px;
+  font-weight: bold;
+}
 
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
+/* NAV */
+nav {
+  text-align: center;
+  padding: 15px;
+}
 
-    .producto {
-      background: white;
-      padding: 15px;
-      border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
+nav a {
+  margin: 5px;
+  padding: 10px 18px;
+  background: #f4a6b8;
+  color: white;
+  text-decoration: none;
+  border-radius: 20px;
+  font-size: 14px;
+}
 
-    .producto img {
-      width: 100%;
-      border-radius: 10px;
-    }
+/* SECCIONES */
+.section {
+  padding: 30px 20px;
+}
 
-    .precio {
-      color: #e8b4b8;
-      font-weight: bold;
-      font-size: 18px;
-    }
+.section h2 {
+  text-align: center;
+  color: #d46a92;
+}
 
-    .btn {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px;
-      background: #25D366;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-    }
-  </style>
+/* GRID */
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* CARD */
+.producto {
+  background: white;
+  border-radius: 15px;
+  padding: 10px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.producto img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.precio {
+  color: #e91e63;
+  font-weight: bold;
+}
+
+/* BOTON */
+.btn {
+  display: block;
+  margin-top: 8px;
+  padding: 8px;
+  background: #25D366;
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+  color: #999;
+}
+</style>
+
 </head>
 
 <body>
 
 <header>
-  Catálogo Nelida 💄
+Radiant Hestill 💄
 </header>
 
+<nav>
+<a href="#blush">Blush</a>
+<a href="#bases">Bases</a>
+<a href="#primer">Primer</a>
+<a href="#ojos">Ojos</a>
+</nav>
+
+<!-- BLUSH -->
+<section class="section" id="blush">
+<h2>💗 Blush</h2>
 <div class="container">
 
-  <div class="producto">
-    <img src="https://via.placeholder.com/200" alt="Labial">
-    <h3>Labial Matte</h3>
-    <p class="precio">$120</p>
-    <a class="btn" href="https://wa.me/521XXXXXXXXXX" target="_blank">
-      Pedir
-    </a>
-  </div>
+<div class="producto">
+<img src="https://via.placeholder.com/200">
+<h4>Blush Líquido</h4>
+<p class="precio">$120</p>
+<a class="btn" href="https://wa.me/521XXXXXXXXXX">Comprar</a>
+</div>
 
-  <div class="producto">
-    <img src="https://via.placeholder.com/200" alt="Base">
-    <h3>Base Líquida</h3>
-    <p class="precio">$250</p>
-    <a class="btn" href="https://wa.me/521XXXXXXXXXX" target="_blank">
-      Pedir
-    </a>
-  </div>
+<div class="producto">
+<img src="https://via.placeholder.com/200">
+<h4>Blush en Crema</h4>
+<p class="precio">$140</p>
+<a class="btn" href="https://wa.me/521XXXXXXXXXX">Comprar</a>
+</div>
+
+<div class="producto">
+<img src="https://via.placeholder.com/200">
+<h4>Blush en Polvo</h4>
+<p class="precio">$110</p>
+<a class="btn" href="https://wa.me/521XXXXXXXXXX">Comprar</a>
+</div>
 
 </div>
+</section>
+
+<!-- BASES -->
+<section class="section" id="bases">
+<h2>🧴 Bases</h2>
+<div class="container">
+
+<div class="producto">
+<img src="https://via.placeholder.com/200">
+<h4>Base Líquida</h4>
+<p class="precio">$118</p>
+<a class="btn" href="https://wa.me/521XXXXXXXXXX">Comprar</a>
+</div>
+
+</div>
+</section>
+
+<!-- PRIMER -->
+<section class="section" id="primer">
+<h2>✨ Primer</h2>
+<div class="container">
+
+<div class="producto">
+<img src="https://via.placeholder.com/200">
+<h4>Hydrating Primer</h4>
+<p class="precio">$149</p>
+<a class="btn" href="https://wa.me/521XXXXXXXXXX">Comprar</a>
+</div>
+
+<div class="producto">
+<img src="https://via.placeholder.com/200">
+<h4>All Matte Primer</h4>
+<p class="precio">$155</p>
+<a class="btn" href="https://wa.me/521XXXXXXXXXX">Comprar</a>
+</div>
+
+</div>
+</section>
+
+<!-- OJOS -->
+<section class="section" id="ojos">
+<h2>👁️ Ojos</h2>
+<div class="container">
+
+<div class="producto">
+<img src="https://via.placeholder.com/200">
+<h4>Delineador</h4>
+<p class="precio">$73</p>
+<a class="btn" href="https://wa.me/521XXXXXXXXXX">Comprar</a>
+</div>
+
+</div>
+</section>
+
+<footer>
+© 2026 Radiant Hestill
+</footer>
 
 </body>
 </html>
