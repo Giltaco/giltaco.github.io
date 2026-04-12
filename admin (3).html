@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Neli's Make'Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink-soft: #fce4ec;
+    --pink-light: #f8bbd0;
+    --pink-mid: #f48fb1;
+    --pink-main: #e91e8c;
+    --pink-deep: #c2185b;
+    --pink-dark: #880e4f;
+    --rose-bg: #fff5f8;
+    --gold: #c9a84c;
+    --gold-light: #f0dfa0;
+    --text-dark: #3a1a28;
+    --text-mid: #7a3a52;
+    --text-soft: #b07090;
+    --white: #fffcfd;
+    --danger: #e53935;
+    --success: #43a047;
+    --sidebar-w: 260px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--rose-bg);
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  /* ── LOGIN ── */
+  #loginScreen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--pink-soft) 0%, #fff5f8 60%, #fce4ec 100%);
+    padding: 2rem;
+  }
+
+  .login-card {
+    background: white;
+    border-radius: 24px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 60px rgba(194,24,91,0.12);
+    border: 1px solid rgba(244,143,177,0.25);
+    text-align: center;
+  }
+
+  .login-logo {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--pink-main), var(--pink-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: white;
+    margin: 0 auto 20px;
+    border: 3px solid var(--pink-light);
+  }
+
+  .login-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--pink-dark);
+    margin-bottom: 4px;
+  }
+
+  .login-sub {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 36px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+    text-align: left;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--pink-light);
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-dark);
+    background: var(--white);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--pink-mid);
+    box-shadow: 0 0 0 3px rgba(244,143,177,0.2);
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, var(--pink-main), var(--pink-deep));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.22s;
+    box-shadow: 0 6px 20px rgba(233,30,140,0.28);
+  }
+
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(233,30,140,0.35); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .error-msg {
+    background: #fdecea;
+    color: var(--danger);
+    border: 1px solid #f5c6cb;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  /* ── SETUP SCREEN ── */
+  #setupScreen {
+    min-height: 100vh;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--pink-soft) 0%, #fff5f8 100%);
+    padding: 2rem;
+  }
+
+  .setup-card {
+    background: white;
+    border-radius: 24px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 560px;
+    box-shadow: 0 20px 60px rgba(194,24,91,0.12);
+    border: 1px solid rgba(244,143,177,0.25);
+  }
+
+  .setup-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 300;
+    color: var(--pink-dark);
+    margin-bottom: 8px;
+  }
+
+  .setup-desc {
+    font-size: 13px;
+    color: var(--text-soft);
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+
+  .setup-step {
+    background: var(--pink-soft);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.7;
+  }
+
+  .setup-step strong { color: var(--pink-dark); }
+  .setup-step code {
+    background: rgba(233,30,140,0.1);
+    color: var(--pink-deep);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: monospace;
+  }
+
+  /* ── MAIN APP ── */
+  #app {
+    display: none;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: var(--sidebar-w);
+    background: white;
+    border-right: 1px solid rgba(244,143,177,0.2);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-head {
+    padding: 24px 20px;
+    border-bottom: 1px solid rgba(244,143,177,0.15);
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sidebar-logo-icon {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--pink-main), var(--pink-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logo-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--pink-dark);
+    line-height: 1.1;
+  }
+
+  .sidebar-logo-sub {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 12px;
+    overflow-y: auto;
+  }
+
+  .nav-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    padding: 10px 8px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-mid);
+    transition: all 0.18s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    margin-bottom: 2px;
+  }
+
+  .nav-item:hover { background: var(--pink-soft); color: var(--pink-dark); }
+  .nav-item.active { background: var(--pink-soft); color: var(--pink-dark); font-weight: 500; }
+  .nav-item .nav-icon { font-size: 17px; width: 22px; text-align: center; }
+
+  .sidebar-footer {
+    padding: 16px 12px;
+    border-top: 1px solid rgba(244,143,177,0.15);
+  }
+
+  .btn-logout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--pink-light);
+    background: white;
+    color: var(--text-mid);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.18s;
+  }
+
+  .btn-logout:hover { background: #fdecea; border-color: #f5c6cb; color: var(--danger); }
+
+  /* ── MAIN CONTENT ── */
+  .main-content {
+    margin-left: var(--sidebar-w);
+    min-height: 100vh;
+    padding: 28px;
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .page-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px;
+    font-weight: 300;
+    color: var(--pink-dark);
+    font-style: italic;
+  }
+
+  .page-subtitle {
+    font-size: 12px;
+    color: var(--text-soft);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── STATS ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid rgba(244,143,177,0.2);
+    box-shadow: 0 2px 12px rgba(194,24,91,0.05);
+  }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 300;
+    color: var(--pink-main);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-soft);
+  }
+
+  /* ── SECTION PANEL ── */
+  .panel {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid rgba(244,143,177,0.2);
+    box-shadow: 0 2px 16px rgba(194,24,91,0.05);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .panel-head {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(244,143,177,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .panel-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--text-dark);
+  }
+
+  .panel-body { padding: 24px; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn-pink {
+    background: linear-gradient(135deg, var(--pink-main), var(--pink-deep));
+    color: white;
+    box-shadow: 0 4px 14px rgba(233,30,140,0.22);
+  }
+
+  .btn-pink:hover { transform: translateY(-1px); box-shadow: 0 7px 20px rgba(233,30,140,0.3); }
+
+  .btn-outline {
+    background: white;
+    color: var(--text-mid);
+    border: 1px solid var(--pink-light);
+  }
+
+  .btn-outline:hover { background: var(--pink-soft); color: var(--pink-dark); }
+
+  .btn-danger { background: #fdecea; color: var(--danger); border: 1px solid #f5c6cb; }
+  .btn-danger:hover { background: var(--danger); color: white; }
+
+  .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(136,14,79,0.15);
+    backdrop-filter: blur(4px);
+    z-index: 500;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: white;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 640px;
+    margin: auto;
+    box-shadow: 0 24px 80px rgba(136,14,79,0.2);
+    overflow: hidden;
+    transform: translateY(20px);
+    transition: transform 0.25s;
+  }
+
+  .modal-overlay.open .modal { transform: translateY(0); }
+
+  .modal-head {
+    padding: 24px 28px;
+    border-bottom: 1px solid rgba(244,143,177,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--pink-dark);
+  }
+
+  .modal-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--pink-light);
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--text-mid);
+    transition: all 0.18s;
+  }
+
+  .modal-close:hover { background: var(--pink-soft); color: var(--pink-dark); }
+
+  .modal-body { padding: 28px; }
+
+  .modal-footer {
+    padding: 20px 28px;
+    border-top: 1px solid rgba(244,143,177,0.15);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  /* ── FORM LAYOUT ── */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  /* ── IMAGE UPLOAD ── */
+  .img-upload-area {
+    border: 2px dashed var(--pink-light);
+    border-radius: 14px;
+    padding: 28px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.22s;
+    position: relative;
+    background: var(--rose-bg);
+  }
+
+  .img-upload-area:hover { border-color: var(--pink-mid); background: var(--pink-soft); }
+  .img-upload-area.drag-over { border-color: var(--pink-main); background: rgba(233,30,140,0.05); }
+
+  .img-upload-icon { font-size: 36px; margin-bottom: 10px; }
+  .img-upload-text { font-size: 13px; color: var(--text-soft); }
+  .img-upload-text strong { color: var(--pink-main); }
+  .img-upload-area input[type=file] { display: none; }
+
+  .img-preview-wrap {
+    display: none;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 12px;
+  }
+
+  .img-preview-wrap img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    display: block;
+    border-radius: 12px;
+  }
+
+  .img-preview-remove {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: rgba(229,57,53,0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px; height: 28px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── COLOR SWATCHES INPUT ── */
+  .swatches-input {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid var(--pink-light);
+    border-radius: 12px;
+    min-height: 52px;
+    background: var(--white);
+  }
+
+  .swatch-chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--pink-soft);
+    border: 1px solid var(--pink-light);
+    border-radius: 20px;
+    padding: 3px 10px 3px 5px;
+    font-size: 12px;
+    color: var(--text-mid);
+  }
+
+  .swatch-dot {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    flex-shrink: 0;
+  }
+
+  .swatch-remove {
+    cursor: pointer;
+    color: var(--text-soft);
+    font-size: 14px;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+
+  .swatch-remove:hover { color: var(--danger); }
+
+  .swatch-add {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .swatch-add input[type=color] {
+    width: 28px; height: 28px;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+
+  .swatch-add-btn {
+    background: none;
+    border: 1px dashed var(--pink-mid);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 12px;
+    color: var(--pink-deep);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.18s;
+  }
+
+  .swatch-add-btn:hover { background: var(--pink-soft); border-style: solid; }
+
+  /* ── TAGS INPUT ── */
+  .tags-input {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    padding: 8px 10px;
+    border: 1px solid var(--pink-light);
+    border-radius: 12px;
+    min-height: 48px;
+    background: var(--white);
+    cursor: text;
+  }
+
+  .tag-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--pink-soft);
+    border: 1px solid var(--pink-light);
+    color: var(--pink-deep);
+    border-radius: 20px;
+    padding: 3px 10px 3px 10px;
+    font-size: 12px;
+  }
+
+  .tag-chip-remove {
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-soft);
+    transition: color 0.15s;
+  }
+
+  .tag-chip-remove:hover { color: var(--danger); }
+
+  .tags-input input {
+    border: none;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    background: transparent;
+    color: var(--text-dark);
+    min-width: 120px;
+    flex: 1;
+  }
+
+  /* ── PRODUCT TABLE ── */
+  .product-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .product-table th {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid rgba(244,143,177,0.15);
+    white-space: nowrap;
+  }
+
+  .product-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(244,143,177,0.1);
+    font-size: 13.5px;
+    color: var(--text-dark);
+    vertical-align: middle;
+  }
+
+  .product-table tr:last-child td { border-bottom: none; }
+  .product-table tr:hover td { background: rgba(252,228,236,0.3); }
+
+  .prod-thumb {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    object-fit: cover;
+    background: var(--pink-soft);
+    border: 1px solid var(--pink-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .prod-thumb img {
+    width: 44px; height: 44px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+  }
+
+  .cat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: var(--pink-soft);
+    color: var(--pink-deep);
+    border: 1px solid var(--pink-light);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .price-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--pink-main);
+  }
+
+  .actions-cell { display: flex; gap: 6px; }
+
+  /* ── SEARCH ── */
+  .search-wrap {
+    position: relative;
+  }
+
+  .search-wrap input {
+    padding: 9px 14px 9px 38px;
+    border: 1px solid var(--pink-light);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-dark);
+    background: white;
+    outline: none;
+    width: 220px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .search-wrap input:focus {
+    border-color: var(--pink-mid);
+    box-shadow: 0 0 0 3px rgba(244,143,177,0.2);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: var(--text-soft);
+    pointer-events: none;
+  }
+
+  /* ── CATEGORIES PAGE ── */
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .cat-card {
+    background: white;
+    border: 1px solid rgba(244,143,177,0.2);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 10px rgba(194,24,91,0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .cat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(194,24,91,0.1); }
+
+  .cat-emoji { font-size: 30px; }
+
+  .cat-info { flex: 1; }
+
+  .cat-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--pink-dark);
+    margin-bottom: 2px;
+  }
+
+  .cat-count {
+    font-size: 11px;
+    color: var(--text-soft);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--pink-dark);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 13.5px;
+    font-weight: 500;
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+    box-shadow: 0 8px 28px rgba(136,14,79,0.25);
+  }
+
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  #toast.success { background: var(--success); }
+  #toast.error { background: var(--danger); }
+
+  /* ── MOBILE TOGGLE ── */
+  .mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 14px; left: 14px;
+    z-index: 200;
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: white;
+    border: 1px solid var(--pink-light);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 2px 10px rgba(194,24,91,0.1);
+  }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(136,14,79,0.2);
+    z-index: 99;
+    backdrop-filter: blur(2px);
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .empty-icon { font-size: 52px; margin-bottom: 14px; }
+
+  .empty-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-mid);
+    margin-bottom: 8px;
+  }
+
+  .empty-sub { font-size: 13px; color: var(--text-soft); margin-bottom: 24px; }
+
+  /* ── UPLOAD PROGRESS ── */
+  .upload-progress {
+    background: var(--pink-soft);
+    border-radius: 8px;
+    height: 6px;
+    overflow: hidden;
+    margin-top: 10px;
+    display: none;
+  }
+
+  .upload-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--pink-main), var(--pink-deep));
+    border-radius: 8px;
+    width: 0%;
+    transition: width 0.3s;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .sidebar {
+      transform: translateX(calc(-1 * var(--sidebar-w)));
+    }
+
+    .sidebar.open { transform: translateX(0); }
+
+    .sidebar-overlay.open { display: block; }
+
+    .main-content { margin-left: 0; padding: 20px 16px; padding-top: 70px; }
+
+    .mobile-menu-btn { display: flex; }
+
+    .form-row { grid-template-columns: 1fr; }
+
+    .modal { margin: 0; border-radius: 20px 20px 0 0; }
+
+    .modal-overlay {
+      align-items: flex-end;
+      padding: 0;
+    }
+
+    .product-table { display: block; overflow-x: auto; }
+
+    .search-wrap input { width: 100%; }
+
+    .page-header { flex-direction: column; align-items: flex-start; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .page { display: none; animation: fadeUp 0.35s ease both; }
+  .page.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ── SETUP SCREEN ── -->
+<div id="setupScreen">
+  <div class="setup-card">
+    <h2 class="setup-title">⚙️ Configuración Inicial</h2>
+    <p class="setup-desc">Antes de usar el panel admin, necesitas configurar tu proyecto de Supabase. Sigue estos pasos:</p>
+
+    <div class="setup-step">
+      <strong>1.</strong> Ve a <strong>supabase.com</strong>, crea una cuenta gratuita y un nuevo proyecto.
+    </div>
+    <div class="setup-step">
+      <strong>2.</strong> En tu proyecto de Supabase, ve a <strong>SQL Editor</strong> y ejecuta el siguiente SQL para crear las tablas:
+      <br><br>
+      <code>-- Copia el SQL de abajo y pégalo en el SQL Editor</code>
+    </div>
+    <div class="setup-step" style="font-family:monospace; font-size:11px; background:#1e1e2e; color:#cdd6f4; overflow-x:auto; white-space:pre; line-height:1.6;">
+create table categorias (
+  id uuid primary key default gen_random_uuid(),
+  nombre text not null,
+  emoji text default '💄',
+  slug text unique not null,
+  orden int default 0,
+  created_at timestamptz default now()
+);
+
+create table productos (
+  id uuid primary key default gen_random_uuid(),
+  categoria_id uuid references categorias(id) on delete set null,
+  nombre text not null,
+  marca text,
+  descripcion text,
+  precio numeric default 0,
+  precio_anterior numeric default 0,
+  imagen_url text,
+  emoji text default '💄',
+  tonos text[] default '{}',
+  tags text[] default '{}',
+  activo boolean default true,
+  orden int default 0,
+  created_at timestamptz default now()
+);
+
+-- Storage bucket para imágenes
+insert into storage.buckets (id, name, public)
+values ('producto-fotos', 'producto-fotos', true);
+
+-- Políticas de acceso (ajusta según tus necesidades)
+create policy "Public read" on storage.objects
+  for select using (bucket_id = 'producto-fotos');
+
+create policy "Auth upload" on storage.objects
+  for insert with check (bucket_id = 'producto-fotos');
+
+create policy "Auth delete" on storage.objects
+  for delete using (bucket_id = 'producto-fotos');
+
+alter table categorias enable row level security;
+alter table productos enable row level security;
+
+create policy "Public read categorias" on categorias for select using (true);
+create policy "Public read productos" on productos for select using (true);
+create policy "Auth all categorias" on categorias for all using (auth.role() = 'authenticated');
+create policy "Auth all productos" on productos for all using (auth.role() = 'authenticated');
+    </div>
+
+    <div class="setup-step">
+      <strong>3.</strong> Ve a <strong>Settings → API</strong> en Supabase y copia la <strong>URL del proyecto</strong> y la <strong>anon key</strong>.
+    </div>
+    <div class="setup-step">
+      <strong>4.</strong> También en <strong>Authentication → Users</strong>, crea un usuario con email y contraseña para el acceso al admin.
+    </div>
+
+    <br>
+    <div class="form-group">
+      <label>URL del Proyecto Supabase</label>
+      <input type="url" id="setupUrl" placeholder="https://xxxx.supabase.co">
+    </div>
+    <div class="form-group">
+      <label>Anon Key</label>
+      <input type="text" id="setupKey" placeholder="eyJhbGci...">
+    </div>
+    <button class="btn-primary" onclick="saveSetup()">Guardar y continuar →</button>
+  </div>
+</div>
+
+<!-- ── LOGIN SCREEN ── -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">N</div>
+    <div class="login-title">Panel Admin</div>
+    <div class="login-sub">Neli's Make'Up</div>
+    <div class="error-msg" id="loginError"></div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="tu@email.com" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label>Contraseña</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()">
+    </div>
+    <button class="btn-primary" id="loginBtn" onclick="doLogin()">Entrar al Panel</button>
+    <br><br>
+    <button onclick="document.getElementById('setupScreen').style.display='flex'; document.getElementById('loginScreen').style.display='none';" style="background:none;border:none;color:var(--text-soft);font-size:12px;cursor:pointer;font-family:'DM Sans'">⚙️ Reconfigurar Supabase</button>
+  </div>
+</div>
+
+<!-- ── MAIN APP ── -->
+<div id="app">
+  <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleSidebar()">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">N</div>
+        <div>
+          <div class="sidebar-logo-text">Neli's Make'Up</div>
+          <div class="sidebar-logo-sub">Panel Admin</div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-label">Principal</div>
+      <button class="nav-item active" onclick="showPage('dashboard', this)">
+        <span class="nav-icon">📊</span> Dashboard
+      </button>
+      <button class="nav-item" onclick="showPage('productos', this)">
+        <span class="nav-icon">💄</span> Productos
+      </button>
+      <button class="nav-item" onclick="showPage('categorias', this)">
+        <span class="nav-icon">🏷️</span> Categorías
+      </button>
+
+      <div class="nav-label" style="margin-top:12px">Catálogo</div>
+      <button class="nav-item" onclick="window.open('catalogo.html','_blank')">
+        <span class="nav-icon">👁️</span> Ver Catálogo
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div style="font-size:11px;color:var(--text-soft);padding:0 12px 10px">
+        <span id="userEmail" style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">
+        🚪 Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content">
+
+    <!-- Dashboard -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Dashboard</div>
+          <div class="page-subtitle">Resumen de tu catálogo</div>
+        </div>
+      </div>
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+          <div class="stat-num" id="statTotal">—</div>
+          <div class="stat-label">Productos Totales</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statActivos">—</div>
+          <div class="stat-label">Activos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statCats">—</div>
+          <div class="stat-label">Categorías</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statConFoto">—</div>
+          <div class="stat-label">Con Foto</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Últimos productos añadidos</div>
+        </div>
+        <div class="panel-body" id="recentProducts">
+          <div class="empty-state">
+            <div class="empty-icon">💄</div>
+            <div class="empty-text">Cargando productos...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Productos -->
+    <div class="page" id="page-productos">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Productos</div>
+          <div class="page-subtitle" id="prodCount">Cargando...</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="prodSearch" placeholder="Buscar producto..." oninput="filterProducts()">
+          </div>
+          <select id="prodFilterCat" onchange="filterProducts()" style="padding:9px 14px;border:1px solid var(--pink-light);border-radius:10px;font-family:'DM Sans';font-size:13px;color:var(--text-mid);background:white;outline:none;cursor:pointer">
+            <option value="">Todas las categorías</option>
+          </select>
+          <button class="btn btn-pink" onclick="openProductModal()">+ Nuevo Producto</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-body" style="padding:0;overflow:hidden">
+          <div id="productTableWrap">
+            <div class="empty-state">
+              <div class="empty-icon">⏳</div>
+              <div class="empty-text">Cargando...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categorías -->
+    <div class="page" id="page-categorias">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Categorías</div>
+          <div class="page-subtitle">Organiza tu catálogo por categorías</div>
+        </div>
+        <button class="btn btn-pink" onclick="openCatModal()">+ Nueva Categoría</button>
+      </div>
+
+      <div id="catGrid" class="cat-grid">
+        <div class="empty-state" style="grid-column:1/-1">
+          <div class="empty-icon">⏳</div>
+          <div class="empty-text">Cargando...</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── MODAL PRODUCTO ── -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="productModalTitle">Nuevo Producto</div>
+      <button class="modal-close" onclick="closeModal('productModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="prodId">
+
+      <!-- Foto -->
+      <div class="form-group">
+        <label>Foto del Producto</label>
+        <div class="img-upload-area" id="imgUploadArea" onclick="document.getElementById('imgFileInput').click()" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+          <div class="img-upload-icon">📸</div>
+          <div class="img-upload-text">
+            <strong>Haz clic para subir</strong> o arrastra la foto aquí<br>
+            <small style="color:var(--text-soft)">JPG, PNG, WEBP — máx. 5MB</small>
+          </div>
+          <input type="file" id="imgFileInput" accept="image/*" onchange="handleImgSelect(event)">
+        </div>
+        <div class="upload-progress" id="uploadProgress"><div class="upload-bar" id="uploadBar"></div></div>
+        <div class="img-preview-wrap" id="imgPreviewWrap">
+          <img id="imgPreview" src="" alt="Preview">
+          <button class="img-preview-remove" onclick="removeImage()">✕</button>
+        </div>
+        <input type="hidden" id="prodImageUrl">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre del Producto *</label>
+          <input type="text" id="prodNombre" placeholder="Ej: Labial Mate Rojo">
+        </div>
+        <div class="form-group">
+          <label>Marca</label>
+          <input type="text" id="prodMarca" placeholder="Ej: e.l.f. Cosmetics">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea id="prodDesc" placeholder="Describe el producto..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Categoría *</label>
+          <select id="prodCat">
+            <option value="">Seleccionar categoría</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Emoji (placeholder sin foto)</label>
+          <input type="text" id="prodEmoji" placeholder="💄" maxlength="4">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Precio (MXN) — 0 = "Consultar"</label>
+          <input type="number" id="prodPrecio" placeholder="0" min="0">
+        </div>
+        <div class="form-group">
+          <label>Precio Anterior (tachado)</label>
+          <input type="number" id="prodPrecioAnt" placeholder="0" min="0">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Tonos de Color</label>
+        <div class="swatches-input" id="swatchesInput">
+          <div class="swatch-add">
+            <input type="color" id="swatchColor" value="#e91e8c">
+            <button class="swatch-add-btn" onclick="addSwatch()">+ Agregar tono</button>
+          </div>
+        </div>
+        <input type="hidden" id="prodTonos">
+      </div>
+
+      <div class="form-group">
+        <label>Tags / Características</label>
+        <div class="tags-input" id="tagsInput" onclick="document.getElementById('tagInput').focus()">
+          <input type="text" id="tagInput" placeholder="Escribe y presiona Enter..." onkeydown="handleTagKey(event)">
+        </div>
+        <input type="hidden" id="prodTags">
+        <small style="color:var(--text-soft);font-size:11px;margin-top:4px;display:block">Ej: Larga duración, Waterproof, Natural</small>
+      </div>
+
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" id="prodActivo" checked style="width:16px;height:16px;accent-color:var(--pink-main)">
+          Producto activo (visible en el catálogo)
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('productModal')">Cancelar</button>
+      <button class="btn btn-pink" id="saveProdBtn" onclick="saveProduct()">💾 Guardar Producto</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL CATEGORÍA ── -->
+<div class="modal-overlay" id="catModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="catModalTitle">Nueva Categoría</div>
+      <button class="modal-close" onclick="closeModal('catModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="catId">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre de la Categoría *</label>
+          <input type="text" id="catNombre" placeholder="Ej: Maquillaje">
+        </div>
+        <div class="form-group">
+          <label>Emoji</label>
+          <input type="text" id="catEmoji" placeholder="💄" maxlength="4">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Slug (ID único, sin espacios ni tildes)</label>
+        <input type="text" id="catSlug" placeholder="maquillaje">
+        <small style="color:var(--text-soft);font-size:11px;margin-top:4px;display:block">Se genera automáticamente al escribir el nombre. Puedes editarlo.</small>
+      </div>
+      <div class="form-group">
+        <label>Orden de aparición</label>
+        <input type="number" id="catOrden" placeholder="0" min="0">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('catModal')">Cancelar</button>
+      <button class="btn btn-pink" onclick="saveCat()">💾 Guardar Categoría</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────
+const STORAGE_KEY_URL = 'nelis_sb_url';
+const STORAGE_KEY_KEY = 'nelis_sb_key';
+
+let supabaseClient = null;
+let productos = [];
+let categorias = [];
+let currentImageFile = null;
+let editingProduct = null;
+let swatches = [];
+let tags = [];
+
+// ── SETUP ────────────────────────────────────────────
+function saveSetup() {
+  const url = document.getElementById('setupUrl').value.trim();
+  const key = document.getElementById('setupKey').value.trim();
+  if (!url || !key) return toast('Completa ambos campos', 'error');
+  localStorage.setItem(STORAGE_KEY_URL, url);
+  localStorage.setItem(STORAGE_KEY_KEY, key);
+  location.reload();
+}
+
+function initSupabase() {
+  const url = localStorage.getItem(STORAGE_KEY_URL);
+  const key = localStorage.getItem(STORAGE_KEY_KEY);
+  if (!url || !key) {
+    document.getElementById('setupScreen').style.display = 'flex';
+    document.getElementById('loginScreen').style.display = 'none';
+    return false;
+  }
+  supabaseClient = supabase.createClient(url, key);
+  return true;
+}
+
+// ── AUTH ─────────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const btn = document.getElementById('loginBtn');
+  const err = document.getElementById('loginError');
+  err.style.display = 'none';
+
+  if (!email || !pass) { err.textContent = 'Ingresa email y contraseña.'; err.style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Entrando...';
+
+  const { error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
+  btn.disabled = false;
+  btn.textContent = 'Entrar al Panel';
+
+  if (error) {
+    err.textContent = 'Credenciales incorrectas. Verifica tu email y contraseña.';
+    err.style.display = 'block';
+  } else {
+    startApp();
+  }
+}
+
+async function doLogout() {
+  await supabaseClient.auth.signOut();
+  location.reload();
+}
+
+// ── INIT APP ─────────────────────────────────────────
+async function startApp() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) return;
+
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('userEmail').textContent = session.user.email;
+
+  await Promise.all([loadCategorias(), loadProductos()]);
+  renderDashboard();
+  renderCategorias();
+  renderProductos();
+}
+
+// ── DATA ─────────────────────────────────────────────
+async function loadCategorias() {
+  const { data } = await supabaseClient.from('categorias').select('*').order('orden');
+  categorias = data || [];
+}
+
+async function loadProductos() {
+  const { data } = await supabaseClient.from('productos').select('*, categorias(nombre,emoji,slug)').order('created_at', { ascending: false });
+  productos = data || [];
+}
+
+// ── DASHBOARD ────────────────────────────────────────
+function renderDashboard() {
+  document.getElementById('statTotal').textContent = productos.length;
+  document.getElementById('statActivos').textContent = productos.filter(p => p.activo).length;
+  document.getElementById('statCats').textContent = categorias.length;
+  document.getElementById('statConFoto').textContent = productos.filter(p => p.imagen_url).length;
+
+  const wrap = document.getElementById('recentProducts');
+  const recent = productos.slice(0, 5);
+  if (!recent.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">💄</div><div class="empty-text">Aún no hay productos</div><div class="empty-sub">Empieza añadiendo tu primer producto</div><button class="btn btn-pink" onclick="showPage('productos')">Agregar Producto</button></div>`;
+    return;
+  }
+  wrap.innerHTML = `<table class="product-table"><thead><tr><th>Foto</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Estado</th></tr></thead><tbody>
+  ${recent.map(p => `
+    <tr>
+      <td><div class="prod-thumb">${p.imagen_url ? `<img src="${p.imagen_url}" alt="">` : p.emoji || '💄'}</div></td>
+      <td><strong>${p.nombre}</strong>${p.marca ? `<br><small style="color:var(--text-soft)">${p.marca}</small>` : ''}</td>
+      <td><span class="cat-badge">${p.categorias?.emoji || ''} ${p.categorias?.nombre || '—'}</span></td>
+      <td><span class="price-label">${p.precio > 0 ? '$' + p.precio : 'Consultar'}</span></td>
+      <td><span style="font-size:11px;padding:3px 10px;border-radius:20px;background:${p.activo ? '#e8f5e9' : '#fdecea'};color:${p.activo ? 'var(--success)' : 'var(--danger)'}">${p.activo ? '✓ Activo' : '✗ Oculto'}</span></td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+// ── PRODUCTOS ────────────────────────────────────────
+function renderProductos() {
+  const count = productos.length;
+  document.getElementById('prodCount').textContent = `${count} producto${count !== 1 ? 's' : ''}`;
+
+  // Populate category filter
+  const catFilter = document.getElementById('prodFilterCat');
+  catFilter.innerHTML = '<option value="">Todas las categorías</option>' +
+    categorias.map(c => `<option value="${c.id}">${c.emoji} ${c.nombre}</option>`).join('');
+
+  filterProducts();
+}
+
+function filterProducts() {
+  const q = document.getElementById('prodSearch').value.toLowerCase();
+  const cat = document.getElementById('prodFilterCat').value;
+
+  let filtered = productos.filter(p => {
+    const matchQ = !q || p.nombre.toLowerCase().includes(q) || (p.marca || '').toLowerCase().includes(q) || (p.descripcion || '').toLowerCase().includes(q);
+    const matchCat = !cat || p.categoria_id === cat;
+    return matchQ && matchCat;
+  });
+
+  const wrap = document.getElementById('productTableWrap');
+
+  if (!filtered.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">Sin resultados</div><div class="empty-sub">Intenta con otros términos o categoría</div></div>`;
+    return;
+  }
+
+  wrap.innerHTML = `<table class="product-table">
+    <thead><tr><th>Foto</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead>
+    <tbody>
+    ${filtered.map(p => `
+      <tr>
+        <td><div class="prod-thumb">${p.imagen_url ? `<img src="${p.imagen_url}" alt="">` : p.emoji || '💄'}</div></td>
+        <td>
+          <strong style="color:var(--pink-dark)">${p.nombre}</strong>
+          ${p.marca ? `<br><small style="color:var(--text-soft)">${p.marca}</small>` : ''}
+        </td>
+        <td><span class="cat-badge">${p.categorias?.emoji || ''} ${p.categorias?.nombre || '—'}</span></td>
+        <td><span class="price-label">${p.precio > 0 ? '$' + parseFloat(p.precio).toLocaleString('es-MX') : 'Consultar'}</span></td>
+        <td><span style="font-size:11px;padding:3px 10px;border-radius:20px;background:${p.activo ? '#e8f5e9' : '#fdecea'};color:${p.activo ? 'var(--success)' : 'var(--danger)'}">${p.activo ? '✓ Activo' : '✗ Oculto'}</span></td>
+        <td>
+          <div class="actions-cell">
+            <button class="btn btn-outline btn-sm" onclick="editProduct('${p.id}')">✏️ Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}', '${p.nombre.replace(/'/g,"\\'")}')">🗑️</button>
+          </div>
+        </td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+// ── MODAL PRODUCTO ────────────────────────────────────
+function openProductModal(prod = null) {
+  editingProduct = prod;
+  swatches = prod?.tonos || [];
+  tags = prod?.tags || [];
+
+  document.getElementById('productModalTitle').textContent = prod ? 'Editar Producto' : 'Nuevo Producto';
+  document.getElementById('prodId').value = prod?.id || '';
+  document.getElementById('prodNombre').value = prod?.nombre || '';
+  document.getElementById('prodMarca').value = prod?.marca || '';
+  document.getElementById('prodDesc').value = prod?.descripcion || '';
+  document.getElementById('prodEmoji').value = prod?.emoji || '💄';
+  document.getElementById('prodPrecio').value = prod?.precio || 0;
+  document.getElementById('prodPrecioAnt').value = prod?.precio_anterior || 0;
+  document.getElementById('prodActivo').checked = prod ? prod.activo : true;
+  document.getElementById('prodImageUrl').value = prod?.imagen_url || '';
+
+  // Populate category select
+  const catSel = document.getElementById('prodCat');
+  catSel.innerHTML = '<option value="">Seleccionar categoría</option>' +
+    categorias.map(c => `<option value="${c.id}" ${prod?.categoria_id === c.id ? 'selected' : ''}>${c.emoji} ${c.nombre}</option>`).join('');
+
+  // Image preview
+  if (prod?.imagen_url) {
+    document.getElementById('imgPreviewWrap').style.display = 'block';
+    document.getElementById('imgPreview').src = prod.imagen_url;
+    document.getElementById('imgUploadArea').style.display = 'none';
+  } else {
+    document.getElementById('imgPreviewWrap').style.display = 'none';
+    document.getElementById('imgUploadArea').style.display = 'block';
+  }
+
+  currentImageFile = null;
+  renderSwatches();
+  renderTags();
+  openModal('productModal');
+}
+
+function editProduct(id) {
+  const p = productos.find(x => x.id === id);
+  if (p) openProductModal(p);
+}
+
+async function saveProduct() {
+  const nombre = document.getElementById('prodNombre').value.trim();
+  const catId = document.getElementById('prodCat').value;
+  if (!nombre) return toast('El nombre es obligatorio', 'error');
+  if (!catId) return toast('Selecciona una categoría', 'error');
+
+  const btn = document.getElementById('saveProdBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Guardando...';
+
+  try {
+    let imageUrl = document.getElementById('prodImageUrl').value;
+
+    // Upload image if new file selected
+    if (currentImageFile) {
+      imageUrl = await uploadImage(currentImageFile);
+      if (!imageUrl) { btn.disabled = false; btn.textContent = '💾 Guardar Producto'; return; }
+    }
+
+    const payload = {
+      nombre,
+      marca: document.getElementById('prodMarca').value.trim(),
+      descripcion: document.getElementById('prodDesc').value.trim(),
+      categoria_id: catId,
+      emoji: document.getElementById('prodEmoji').value || '💄',
+      precio: parseFloat(document.getElementById('prodPrecio').value) || 0,
+      precio_anterior: parseFloat(document.getElementById('prodPrecioAnt').value) || 0,
+      imagen_url: imageUrl,
+      tonos: swatches,
+      tags: tags,
+      activo: document.getElementById('prodActivo').checked
+    };
+
+    let error;
+    const pid = document.getElementById('prodId').value;
+
+    if (pid) {
+      ({ error } = await supabaseClient.from('productos').update(payload).eq('id', pid));
+    } else {
+      ({ error } = await supabaseClient.from('productos').insert(payload));
+    }
+
+    if (error) throw error;
+
+    toast(pid ? '✓ Producto actualizado' : '✓ Producto añadido', 'success');
+    closeModal('productModal');
+    await loadProductos();
+    renderProductos();
+    renderDashboard();
+
+  } catch (e) {
+    toast('Error: ' + e.message, 'error');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '💾 Guardar Producto';
+}
+
+async function deleteProduct(id, nombre) {
+  if (!confirm(`¿Eliminar "${nombre}"? Esta acción no se puede deshacer.`)) return;
+  const { error } = await supabaseClient.from('productos').delete().eq('id', id);
+  if (error) return toast('Error al eliminar: ' + error.message, 'error');
+  toast('✓ Producto eliminado', 'success');
+  await loadProductos();
+  renderProductos();
+  renderDashboard();
+}
+
+// ── IMAGE UPLOAD ──────────────────────────────────────
+async function uploadImage(file) {
+  const ext = file.name.split('.').pop();
+  const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
+  document.getElementById('uploadProgress').style.display = 'block';
+  document.getElementById('uploadBar').style.width = '30%';
+
+  const { data, error } = await supabaseClient.storage.from('producto-fotos').upload(fileName, file, { contentType: file.type, upsert: false });
+
+  document.getElementById('uploadBar').style.width = '100%';
+  setTimeout(() => { document.getElementById('uploadProgress').style.display = 'none'; document.getElementById('uploadBar').style.width = '0%'; }, 600);
+
+  if (error) { toast('Error al subir foto: ' + error.message, 'error'); return null; }
+
+  const { data: { publicUrl } } = supabaseClient.storage.from('producto-fotos').getPublicUrl(data.path);
+  return publicUrl;
+}
+
+function handleImgSelect(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) return toast('La imagen es muy grande (máx. 5MB)', 'error');
+  currentImageFile = file;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('imgPreview').src = ev.target.result;
+    document.getElementById('imgPreviewWrap').style.display = 'block';
+    document.getElementById('imgUploadArea').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleDragOver(e) { e.preventDefault(); document.getElementById('imgUploadArea').classList.add('drag-over'); }
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('imgUploadArea').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    currentImageFile = file;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('imgPreview').src = ev.target.result;
+      document.getElementById('imgPreviewWrap').style.display = 'block';
+      document.getElementById('imgUploadArea').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function removeImage() {
+  currentImageFile = null;
+  document.getElementById('prodImageUrl').value = '';
+  document.getElementById('imgPreviewWrap').style.display = 'none';
+  document.getElementById('imgUploadArea').style.display = 'block';
+  document.getElementById('imgFileInput').value = '';
+}
+
+// ── SWATCHES ─────────────────────────────────────────
+function addSwatch() {
+  const color = document.getElementById('swatchColor').value;
+  if (!swatches.includes(color)) { swatches.push(color); renderSwatches(); }
+}
+
+function removeSwatch(i) { swatches.splice(i, 1); renderSwatches(); }
+
+function renderSwatches() {
+  const wrap = document.getElementById('swatchesInput');
+  const chips = swatches.map((c, i) => `
+    <div class="swatch-chip">
+      <div class="swatch-dot" style="background:${c}"></div>
+      ${c}
+      <span class="swatch-remove" onclick="removeSwatch(${i})">✕</span>
+    </div>`).join('');
+  wrap.innerHTML = chips + `
+    <div class="swatch-add">
+      <input type="color" id="swatchColor" value="#e91e8c">
+      <button class="swatch-add-btn" onclick="addSwatch()">+ Agregar tono</button>
+    </div>`;
+  document.getElementById('prodTonos').value = JSON.stringify(swatches);
+}
+
+// ── TAGS ─────────────────────────────────────────────
+function handleTagKey(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const val = e.target.value.trim().replace(/,$/, '');
+    if (val && !tags.includes(val)) { tags.push(val); renderTags(); }
+    e.target.value = '';
+  } else if (e.key === 'Backspace' && !e.target.value && tags.length) {
+    tags.pop();
+    renderTags();
+  }
+}
+
+function removeTag(i) { tags.splice(i, 1); renderTags(); }
+
+function renderTags() {
+  const wrap = document.getElementById('tagsInput');
+  const chips = tags.map((t, i) => `
+    <div class="tag-chip">
+      ${t}
+      <span class="tag-chip-remove" onclick="removeTag(${i})">✕</span>
+    </div>`).join('');
+  wrap.innerHTML = chips + `<input type="text" id="tagInput" placeholder="${tags.length ? '' : 'Escribe y presiona Enter...'}" onkeydown="handleTagKey(event)">`;
+  document.getElementById('prodTags').value = JSON.stringify(tags);
+}
+
+// ── CATEGORÍAS ────────────────────────────────────────
+function renderCategorias() {
+  const grid = document.getElementById('catGrid');
+  if (!categorias.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🏷️</div><div class="empty-text">No hay categorías aún</div><div class="empty-sub">Crea tu primera categoría</div></div>`;
+    return;
+  }
+  grid.innerHTML = categorias.map(c => {
+    const count = productos.filter(p => p.categoria_id === c.id).length;
+    return `<div class="cat-card">
+      <div class="cat-emoji">${c.emoji}</div>
+      <div class="cat-info">
+        <div class="cat-name">${c.nombre}</div>
+        <div class="cat-count">${count} producto${count !== 1 ? 's' : ''}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <button class="btn btn-outline btn-sm" onclick="editCat('${c.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteCat('${c.id}', '${c.nombre.replace(/'/g,"\\'")}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openCatModal(cat = null) {
+  document.getElementById('catModalTitle').textContent = cat ? 'Editar Categoría' : 'Nueva Categoría';
+  document.getElementById('catId').value = cat?.id || '';
+  document.getElementById('catNombre').value = cat?.nombre || '';
+  document.getElementById('catEmoji').value = cat?.emoji || '💄';
+  document.getElementById('catSlug').value = cat?.slug || '';
+  document.getElementById('catOrden').value = cat?.orden || categorias.length;
+
+  // Auto-generate slug from name
+  document.getElementById('catNombre').oninput = (e) => {
+    if (!cat) document.getElementById('catSlug').value = slugify(e.target.value);
+  };
+
+  openModal('catModal');
+}
+
+function editCat(id) {
+  const c = categorias.find(x => x.id === id);
+  if (c) openCatModal(c);
+}
+
+function slugify(str) {
+  return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+}
+
+async function saveCat() {
+  const nombre = document.getElementById('catNombre').value.trim();
+  const slug = document.getElementById('catSlug').value.trim();
+  if (!nombre || !slug) return toast('Nombre y slug son obligatorios', 'error');
+
+  const payload = {
+    nombre,
+    emoji: document.getElementById('catEmoji').value || '💄',
+    slug,
+    orden: parseInt(document.getElementById('catOrden').value) || 0
+  };
+
+  const cid = document.getElementById('catId').value;
+  let error;
+  if (cid) {
+    ({ error } = await supabaseClient.from('categorias').update(payload).eq('id', cid));
+  } else {
+    ({ error } = await supabaseClient.from('categorias').insert(payload));
+  }
+
+  if (error) return toast('Error: ' + error.message, 'error');
+
+  toast(cid ? '✓ Categoría actualizada' : '✓ Categoría creada', 'success');
+  closeModal('catModal');
+  await Promise.all([loadCategorias(), loadProductos()]);
+  renderCategorias();
+  renderProductos();
+}
+
+async function deleteCat(id, nombre) {
+  const count = productos.filter(p => p.categoria_id === id).length;
+  const msg = count > 0
+    ? `"${nombre}" tiene ${count} producto(s). ¿Eliminar la categoría? Los productos quedarán sin categoría.`
+    : `¿Eliminar la categoría "${nombre}"?`;
+  if (!confirm(msg)) return;
+  const { error } = await supabaseClient.from('categorias').delete().eq('id', id);
+  if (error) return toast('Error: ' + error.message, 'error');
+  toast('✓ Categoría eliminada', 'success');
+  await Promise.all([loadCategorias(), loadProductos()]);
+  renderCategorias();
+  renderProductos();
+}
+
+// ── UI HELPERS ────────────────────────────────────────
+function showPage(name, navEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+  if (window.innerWidth < 768) closeSidebar();
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) closeModal(o.id); });
+});
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+function toast(msg, type = 'default') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + type;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.className = '', 3500);
+}
+
+// ── BOOT ─────────────────────────────────────────────
+(async function boot() {
+  if (!initSupabase()) return;
+
+  document.getElementById('setupScreen').style.display = 'none';
+  const { data: { session } } = await supabaseClient.auth.getSession();
+
+  if (session) {
+    startApp();
+  } else {
+    document.getElementById('loginScreen').style.display = 'flex';
+  }
+})();
+</script>
+</body>
+</html>
