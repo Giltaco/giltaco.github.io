@@ -977,90 +977,6 @@
 </head>
 <body>
 
-<!-- ── SETUP SCREEN ── -->
-<div id="setupScreen">
-  <div class="setup-card">
-    <h2 class="setup-title">⚙️ Configuración Inicial</h2>
-    <p class="setup-desc">Antes de usar el panel admin, necesitas configurar tu proyecto de Supabase. Sigue estos pasos:</p>
-
-    <div class="setup-step">
-      <strong>1.</strong> Ve a <strong>supabase.com</strong>, crea una cuenta gratuita y un nuevo proyecto.
-    </div>
-    <div class="setup-step">
-      <strong>2.</strong> En tu proyecto de Supabase, ve a <strong>SQL Editor</strong> y ejecuta el siguiente SQL para crear las tablas:
-      <br><br>
-      <code>-- Copia el SQL de abajo y pégalo en el SQL Editor</code>
-    </div>
-    <div class="setup-step" style="font-family:monospace; font-size:11px; background:#1e1e2e; color:#cdd6f4; overflow-x:auto; white-space:pre; line-height:1.6;">
-create table categorias (
-  id uuid primary key default gen_random_uuid(),
-  nombre text not null,
-  emoji text default '💄',
-  slug text unique not null,
-  orden int default 0,
-  created_at timestamptz default now()
-);
-
-create table productos (
-  id uuid primary key default gen_random_uuid(),
-  categoria_id uuid references categorias(id) on delete set null,
-  nombre text not null,
-  marca text,
-  descripcion text,
-  precio numeric default 0,
-  precio_anterior numeric default 0,
-  imagen_url text,
-  emoji text default '💄',
-  tonos text[] default '{}',
-  tags text[] default '{}',
-  activo boolean default true,
-  orden int default 0,
-  created_at timestamptz default now()
-);
-
--- Storage bucket para imágenes
-insert into storage.buckets (id, name, public)
-values ('producto-fotos', 'producto-fotos', true);
-
--- Políticas de acceso (ajusta según tus necesidades)
-create policy "Public read" on storage.objects
-  for select using (bucket_id = 'producto-fotos');
-
-create policy "Auth upload" on storage.objects
-  for insert with check (bucket_id = 'producto-fotos');
-
-create policy "Auth delete" on storage.objects
-  for delete using (bucket_id = 'producto-fotos');
-
-alter table categorias enable row level security;
-alter table productos enable row level security;
-
-create policy "Public read categorias" on categorias for select using (true);
-create policy "Public read productos" on productos for select using (true);
-create policy "Auth all categorias" on categorias for all using (auth.role() = 'authenticated');
-create policy "Auth all productos" on productos for all using (auth.role() = 'authenticated');
-    </div>
-
-    <div class="setup-step">
-      <strong>3.</strong> Ve a <strong>Settings → API</strong> en Supabase y copia la <strong>URL del proyecto</strong> y la <strong>anon key</strong>.
-    </div>
-    <div class="setup-step">
-      <strong>4.</strong> También en <strong>Authentication → Users</strong>, crea un usuario con email y contraseña para el acceso al admin.
-    </div>
-
-    <br>
-    <div class="form-group">
-      <label>URL del Proyecto Supabase</label>
-      <input type="url" id="setupUrl" placeholder="https://xxxx.supabase.co">
-    </div>
-    <div class="form-group">
-      <label>Anon Key</label>
-      <input type="text" id="setupKey" placeholder="eyJhbGci...">
-    </div>
-    <button class="btn-primary" onclick="saveSetup()">Guardar y continuar →</button>
-  </div>
-</div>
-
 <!-- ── LOGIN SCREEN ── -->
 <div id="loginScreen">
   <div class="login-card">
@@ -1077,8 +993,6 @@ create policy "Auth all productos" on productos for all using (auth.role() = 'au
       <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()">
     </div>
     <button class="btn-primary" id="loginBtn" onclick="doLogin()">Entrar al Panel</button>
-    <br><br>
-    <button onclick="document.getElementById('setupScreen').style.display='flex'; document.getElementById('loginScreen').style.display='none';" style="background:none;border:none;color:var(--text-soft);font-size:12px;cursor:pointer;font-family:'DM Sans'">⚙️ Reconfigurar Supabase</button>
   </div>
 </div>
 
@@ -1366,8 +1280,8 @@ create policy "Auth all productos" on productos for all using (auth.role() = 'au
 
 <script>
 // ── CONFIG ──────────────────────────────────────────
-const STORAGE_KEY_URL = 'nelis_sb_url';
-const STORAGE_KEY_KEY = 'nelis_sb_key';
+const SUPABASE_URL = 'https://qpkrdrkieualrplxwsga.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFwa3JkcmtpZXVhbHJwbHh3c2dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMzEyNDEsImV4cCI6MjA5MTYwNzI0MX0.dDMnJEWLKOwt6L4kWtH4yvFk3ltB94nK1SIgjrI5tGA';
 
 let supabaseClient = null;
 let productos = [];
@@ -1377,25 +1291,8 @@ let editingProduct = null;
 let swatches = [];
 let tags = [];
 
-// ── SETUP ────────────────────────────────────────────
-function saveSetup() {
-  const url = document.getElementById('setupUrl').value.trim();
-  const key = document.getElementById('setupKey').value.trim();
-  if (!url || !key) return toast('Completa ambos campos', 'error');
-  localStorage.setItem(STORAGE_KEY_URL, url);
-  localStorage.setItem(STORAGE_KEY_KEY, key);
-  location.reload();
-}
-
 function initSupabase() {
-  const url = localStorage.getItem(STORAGE_KEY_URL);
-  const key = localStorage.getItem(STORAGE_KEY_KEY);
-  if (!url || !key) {
-    document.getElementById('setupScreen').style.display = 'flex';
-    document.getElementById('loginScreen').style.display = 'none';
-    return false;
-  }
-  supabaseClient = supabase.createClient(url, key);
+  supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   return true;
 }
 
@@ -1881,9 +1778,8 @@ function toast(msg, type = 'default') {
 
 // ── BOOT ─────────────────────────────────────────────
 (async function boot() {
-  if (!initSupabase()) return;
+  initSupabase();
 
-  document.getElementById('setupScreen').style.display = 'none';
   const { data: { session } } = await supabaseClient.auth.getSession();
 
   if (session) {
