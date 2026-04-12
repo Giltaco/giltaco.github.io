@@ -89,7 +89,6 @@
 
   .logo-sub { font-size: 9px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; }
 
-  /* Header right: search + nav */
   .header-right {
     display: flex;
     align-items: center;
@@ -547,24 +546,17 @@
 </head>
 <body>
 
-<!-- ────────────────────────────────────────────────────────
-  ⚙️ CONFIGURA AQUÍ TU SUPABASE
-  Copia la URL y la Anon Key de tu proyecto en Supabase.
-  Estas mismas credenciales que usaste en el panel admin.
-──────────────────────────────────────────────────────── -->
 <script>
-const SUPABASE_URL  = 'TU_URL_DE_SUPABASE';   // ← Cambia esto
-const SUPABASE_ANON_KEY = 'TU_ANON_KEY';       // ← Cambia esto
+const SUPABASE_URL  = 'https://qpkrdrkieualrplxwsga.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFwa3JkcmtpZXVhbHJwbHh3c2dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMzEyNDEsImV4cCI6MjA5MTYwNzI0MX0.dDMnJEWLKOwt6L4kWtH4yvFk3ltB94nK1SIgjrI5tGA';
 
-// Configuración de la tienda (editable)
 const TIENDA = {
   nombre:      "Neli's Make'Up",
   slogan:      "Tu belleza, nuestra pasión",
-  whatsapp:    "528771392697",          // número con código de país, sin + ni espacios
+  whatsapp:    "528771392697",
   mensajeBase: "Hola Neli! Vi tu catálogo y me interesa pedir: "
 };
 
-// Fechas especiales (opcional — igual que en la versión anterior)
 const FECHAS_ESPECIALES = [
   {
     nombre: "💝 San Valentín", emoji: "💝",
@@ -678,7 +670,6 @@ const FECHAS_ESPECIALES = [
 </a>
 
 <script>
-// ── Helpers ──────────────────────────────────────────
 function waLink(msg) {
   return `https://wa.me/${TIENDA.whatsapp}?text=${encodeURIComponent(msg)}`;
 }
@@ -690,14 +681,11 @@ function svgWA(color = 'white') {
   </svg>`;
 }
 
-// ── Datos ─────────────────────────────────────────────
 let CATEGORIAS = [];
 let PRODUCTOS = [];
 let sb = null;
 
-// ── Init ──────────────────────────────────────────────
 async function init() {
-  // Textos tienda
   document.getElementById('storeName').textContent = TIENDA.nombre;
   document.getElementById('footerLogo').textContent = TIENDA.nombre;
   document.title = TIENDA.nombre + ' — Catálogo';
@@ -706,21 +694,15 @@ async function init() {
 
   detectarFechaEspecial();
 
-  // Init Supabase
-  if (!SUPABASE_URL || SUPABASE_URL === 'TU_URL_DE_SUPABASE') {
-    document.getElementById('offlineBanner').style.display = 'block';
-    document.getElementById('loadingScreen').style.opacity = '0';
-    setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 400);
-    return;
-  }
-
   try {
     sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const [{ data: cats }, { data: prods }] = await Promise.all([
+    const [{ data: cats, error: catsErr }, { data: prods, error: prodsErr }] = await Promise.all([
       sb.from('categorias').select('*').order('orden'),
       sb.from('productos').select('*, categorias(id,nombre,emoji,slug)').eq('activo', true).order('orden')
     ]);
+
+    if (catsErr || prodsErr) throw catsErr || prodsErr;
 
     CATEGORIAS = cats || [];
     PRODUCTOS  = prods || [];
@@ -728,7 +710,7 @@ async function init() {
     buildUI();
 
   } catch (e) {
-    console.error(e);
+    console.error('Error cargando catálogo:', e);
     document.getElementById('offlineBanner').style.display = 'block';
   }
 
@@ -736,7 +718,6 @@ async function init() {
   setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 400);
 }
 
-// ── Build UI ──────────────────────────────────────────
 function buildUI() {
   const nav = document.getElementById('mainNav');
   const filtersWrap = document.getElementById('filtersWrap');
@@ -837,7 +818,6 @@ function buildCard(p, idx) {
   return card;
 }
 
-// ── Seleccionar tono ──────────────────────────────────
 const tonosSeleccionados = {};
 
 function seleccionarTono(el, pid, color) {
@@ -851,9 +831,7 @@ function seleccionarTono(el, pid, color) {
   if (btn) btn.href = waLink(msg);
 }
 
-// ── Filtrar por categoría ─────────────────────────────
 function filtrar(cat, clickedEl) {
-  // Limpiar búsqueda
   document.getElementById('searchInput').value = '';
   document.getElementById('searchResults').classList.remove('active');
   document.getElementById('searchResults').innerHTML = '';
@@ -890,7 +868,6 @@ function filtrar(cat, clickedEl) {
   document.getElementById('filtersWrap').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// ── Búsqueda ──────────────────────────────────────────
 let searchTimer = null;
 
 function handleSearch(q) {
@@ -907,7 +884,6 @@ function doSearch(q) {
     resultsWrap.innerHTML = '';
     catalogoRoot.style.display = '';
     document.querySelectorAll('.section-heading').forEach(el => el.style.display = '');
-    // Reset filters
     document.querySelectorAll('.filter-pill, nav button').forEach(b => b.classList.remove('active'));
     const todosBtn = document.querySelector('[data-cat="todos"]');
     if (todosBtn) todosBtn.classList.add('active');
@@ -940,7 +916,6 @@ function doSearch(q) {
   resultsWrap.classList.add('active');
 }
 
-// ── Fecha especial ────────────────────────────────────
 function detectarFechaEspecial() {
   const hoy = new Date();
   const mm = String(hoy.getMonth() + 1).padStart(2, '0');
@@ -961,7 +936,6 @@ function detectarFechaEspecial() {
   }
 }
 
-// ── Boot ──────────────────────────────────────────────
 init();
 </script>
 
