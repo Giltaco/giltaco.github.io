@@ -1,7 +1,1169 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<meta charset="UTF-8"><!DOCTYPE html>
+<html lang="es">
+<head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Firefly Cosmetics — Catálogo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #f8f7fc;
+  --bg2:         #f2f0f9;
+  --surface:     #ffffff;
+  --border:      rgba(160,130,210,0.15);
+  --border2:     rgba(160,130,210,0.28);
+  --border3:     rgba(160,130,210,0.45);
+
+  --lav-50:      #faf8fe;
+  --lav-100:     #f3f0fb;
+  --lav-200:     #e4ddf5;
+  --lav-300:     #c9bce8;
+  --lav-400:     #a98cd4;
+  --lav-500:     #8b66bc;
+  --lav-600:     #6e4a9e;
+  --lav-700:     #52387a;
+  --lav-800:     #37245a;
+
+  --mist:        #ede9f7;
+  --gold:        #b8966a;
+  --gold-light:  #e8d9bb;
+
+  --text:        #1e1530;
+  --text-mid:    #5a4a72;
+  --text-soft:   #9585b0;
+  --text-xsoft:  #bbb0cc;
+
+  --wa:          #4a9e6e;
+  --wa-hover:    #3a7d56;
+
+  --shadow-xs:   0 1px 6px rgba(100,70,170,0.04);
+  --shadow-sm:   0 2px 14px rgba(100,70,170,0.07);
+  --shadow-md:   0 8px 32px rgba(100,70,170,0.10);
+  --shadow-lg:   0 20px 60px rgba(100,70,170,0.13);
+  --glow:        0 0 0 3px rgba(169,140,212,0.18);
+
+  --radius:      14px;
+  --radius-lg:   20px;
+  --radius-xl:   26px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  overflow-x: hidden;
+}
+
+/* Ambient gradients */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 65% 45% at 92% 8%, rgba(169,140,212,0.09) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 55% at 8% 88%, rgba(197,179,224,0.10) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(243,240,251,0.4) 0%, transparent 70%);
+}
+
+/* ── LOADING ──────────────────────────────────────── */
+#loadingScreen {
+  position: fixed; inset: 0; z-index: 999;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 18px;
+  transition: opacity 0.5s;
+}
+
+.loading-glyph {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  background: var(--lav-600);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  animation: glyphPulse 1.8s ease-in-out infinite;
+}
+
+.loading-glyph::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 55% 30%, rgba(255,255,255,0.22), transparent 60%);
+}
+
+@keyframes glyphPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.65;transform:scale(0.94)} }
+
+.loading-glyph svg { width: 30px; height: 30px; }
+
+.loading-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 400; font-style: italic;
+  color: var(--lav-700); letter-spacing: 0.3px;
+}
+
+.loading-bar {
+  width: 120px; height: 2px;
+  background: var(--lav-200); border-radius: 2px; overflow: hidden;
+}
+
+.loading-bar-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--lav-500), var(--lav-400));
+  border-radius: 2px;
+  animation: loadFill 1.6s ease-in-out infinite;
+}
+
+@keyframes loadFill { 0%{width:0%;margin-left:0} 50%{width:70%;margin-left:0} 100%{width:0%;margin-left:100%} }
+
+/* ── HEADER ────────────────────────────────────────── */
+header {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(248,247,252,0.92);
+  backdrop-filter: blur(18px) saturate(1.4);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 66px; gap: 16px;
+  box-shadow: var(--shadow-xs);
+}
+
+.logo-area {
+  display: flex; align-items: center; gap: 12px; flex-shrink: 0; text-decoration: none;
+}
+
+.logo-mark {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--lav-600);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; flex-shrink: 0;
+}
+
+.logo-mark::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 55% 30%, rgba(255,255,255,0.22), transparent 55%);
+}
+
+.logo-mark svg { width: 20px; height: 20px; }
+
+.logo-text-wrap { display: flex; flex-direction: column; line-height: 1; }
+
+.logo-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 500; font-style: italic;
+  color: var(--lav-700); letter-spacing: 0.2px; white-space: nowrap;
+}
+
+.logo-sub {
+  font-size: 8.5px; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--gold); margin-top: 1px;
+}
+
+.header-right {
+  display: flex; align-items: center; gap: 12px;
+  flex: 1; justify-content: flex-end; min-width: 0;
+}
+
+/* ── SEARCH ────────────────────────────────────────── */
+.search-wrap {
+  position: relative; flex-shrink: 1;
+}
+
+.search-wrap input {
+  padding: 8px 14px 8px 36px;
+  border: 1px solid var(--border2); border-radius: 30px;
+  font-family: 'Outfit', sans-serif; font-size: 12.5px;
+  color: var(--text); background: var(--surface); outline: none;
+  width: 190px; transition: all 0.25s;
+}
+
+.search-wrap input:focus {
+  width: 240px; border-color: var(--lav-400);
+  box-shadow: var(--glow);
+}
+
+.search-wrap input::placeholder { color: var(--text-xsoft); }
+
+.search-icon {
+  position: absolute; left: 12px; top: 50%;
+  transform: translateY(-50%); font-size: 12px;
+  color: var(--text-soft); pointer-events: none;
+}
+
+/* Header Nav */
+.header-nav {
+  display: flex; gap: 2px;
+  overflow-x: auto; scrollbar-width: none;
+}
+
+.header-nav::-webkit-scrollbar { display: none; }
+
+.header-nav button {
+  font-family: 'Outfit', sans-serif;
+  font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase;
+  padding: 6px 13px; border-radius: 20px;
+  border: 1px solid transparent;
+  background: transparent; color: var(--text-mid);
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+
+.header-nav button:hover, .header-nav button.active {
+  background: var(--lav-100); border-color: var(--border2); color: var(--lav-600);
+}
+
+/* ── SPECIAL BANNER ────────────────────────────────── */
+#special-banner {
+  display: none; position: relative; z-index: 1;
+  padding: 14px 2rem;
+}
+
+#special-banner.visible { display: block; }
+
+.special-inner {
+  background: var(--lav-700);
+  border-radius: var(--radius-lg); padding: 20px 28px;
+  display: flex; align-items: center; gap: 22px;
+  max-width: 1100px; margin: 0 auto; flex-wrap: wrap;
+  justify-content: center; position: relative; overflow: hidden;
+}
+
+.special-inner::before {
+  content: attr(data-emoji);
+  position: absolute; font-size: 110px; opacity: 0.09;
+  right: 18px; top: -18px; line-height: 1; pointer-events: none;
+}
+
+.special-inner::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 15% 50%, rgba(169,140,212,0.25) 0%, transparent 60%);
+}
+
+.special-text { position: relative; z-index: 1; }
+
+.special-text h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 300; font-style: italic;
+  color: white; margin-bottom: 4px;
+}
+
+.special-text p { font-size: 12.5px; color: rgba(255,255,255,0.75); }
+
+.special-btn {
+  position: relative; z-index: 1;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.15); color: white;
+  border: 1px solid rgba(255,255,255,0.25);
+  font-family: 'Outfit', sans-serif; font-size: 11.5px; font-weight: 500;
+  letter-spacing: 0.8px; text-transform: uppercase;
+  padding: 9px 20px; border-radius: 30px; cursor: pointer;
+  text-decoration: none; transition: all 0.22s; white-space: nowrap;
+  backdrop-filter: blur(4px);
+}
+
+.special-btn:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+}
+
+/* ── HERO ──────────────────────────────────────────── */
+.hero {
+  position: relative; z-index: 1;
+  text-align: center; padding: 72px 2rem 48px;
+  max-width: 680px; margin: 0 auto;
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-size: 9.5px; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 18px;
+  animation: fadeUp 0.55s ease both;
+}
+
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: ''; display: block; width: 28px; height: 1px;
+  background: var(--gold-light);
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 6vw, 64px); font-weight: 300;
+  color: var(--lav-800); line-height: 1.1; margin-bottom: 16px;
+  animation: fadeUp 0.65s 0.08s ease both;
+}
+
+.hero h1 em {
+  font-style: italic; color: var(--lav-600);
+  font-weight: 400;
+}
+
+.hero p {
+  font-size: 13.5px; color: var(--text-soft); line-height: 1.75;
+  max-width: 340px; margin: 0 auto 40px;
+  animation: fadeUp 0.65s 0.16s ease both;
+}
+
+/* ── CATEGORY FILTER PILLS ─────────────────────────── */
+.filters-bar {
+  position: relative; z-index: 1;
+  display: flex; gap: 7px; justify-content: center;
+  flex-wrap: wrap; padding: 0 2rem; margin-bottom: 52px;
+  animation: fadeUp 0.65s 0.24s ease both;
+}
+
+.filter-pill {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+  padding: 8px 18px; border-radius: 30px;
+  border: 1px solid var(--border2);
+  background: var(--surface); color: var(--text-mid);
+  cursor: pointer; transition: all 0.22s;
+}
+
+.filter-pill:hover {
+  border-color: var(--lav-300); color: var(--lav-600);
+  background: var(--lav-100);
+}
+
+.filter-pill.active {
+  background: var(--lav-600); border-color: var(--lav-600);
+  color: white; box-shadow: 0 4px 16px rgba(110,74,158,0.22);
+}
+
+/* ── SECTION HEADING ───────────────────────────────── */
+.section-heading {
+  position: relative; z-index: 1;
+  padding: 52px 2rem 22px; max-width: 1140px; margin: 0 auto;
+  display: flex; align-items: baseline; gap: 18px;
+}
+
+.section-heading h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 3.5vw, 32px); font-weight: 300;
+  font-style: italic; color: var(--lav-700); white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+
+.section-heading .section-count {
+  font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text-xsoft); padding-top: 2px;
+}
+
+.section-heading::after {
+  content: ''; flex: 1; height: 1px; margin-left: 4px;
+  background: linear-gradient(to right, var(--border2), transparent);
+}
+
+/* ── PRODUCT GRID ──────────────────────────────────── */
+.catalog-section {
+  position: relative; z-index: 1;
+  max-width: 1140px; margin: 0 auto;
+  padding: 0 2rem 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 20px;
+}
+
+/* ── PRODUCT CARD ──────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl); overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  position: relative; display: flex; flex-direction: column;
+  animation: fadeUp 0.5s ease both;
+  box-shadow: var(--shadow-xs);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--lav-300);
+}
+
+/* Card image */
+.card-img-wrap {
+  width: 100%; height: 210px; overflow: hidden; position: relative;
+  background: linear-gradient(145deg, var(--lav-100) 0%, var(--lav-200) 100%);
+  flex-shrink: 0;
+}
+
+.card-img-wrap img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 0.4s ease;
+}
+
+.card:hover .card-img-wrap img { transform: scale(1.04); }
+
+.card-emoji-placeholder {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 10px;
+}
+
+.card-emoji-placeholder span { font-size: 52px; opacity: 0.7; }
+.card-emoji-placeholder small {
+  font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+/* Card category badge */
+.card-badge {
+  position: absolute; top: 12px; left: 12px; z-index: 2;
+  font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+  background: rgba(255,255,255,0.88);
+  color: var(--lav-600);
+  border: 1px solid var(--border2); padding: 4px 11px;
+  border-radius: 20px; backdrop-filter: blur(6px);
+}
+
+/* Card body */
+.card-body {
+  padding: 20px 22px 22px;
+  border-top: 1px solid var(--border);
+  display: flex; flex-direction: column; flex: 1;
+}
+
+.card-brand {
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-xsoft); margin-bottom: 5px;
+}
+
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px; font-weight: 400; font-style: italic;
+  color: var(--lav-800); margin-bottom: 8px; line-height: 1.25;
+}
+
+.card-desc {
+  font-size: 12.5px; color: var(--text-soft); line-height: 1.65;
+  margin-bottom: 14px; flex: 1;
+}
+
+/* Price */
+.card-price {
+  display: flex; align-items: baseline; gap: 8px;
+  margin-bottom: 12px;
+}
+
+.price-main {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 400; color: var(--lav-600); letter-spacing: 0.3px;
+}
+
+.price-currency {
+  font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text-soft); margin-left: -2px;
+}
+
+.price-before {
+  font-size: 12px; color: var(--text-xsoft);
+  text-decoration: line-through; font-family: 'Outfit', sans-serif;
+}
+
+.price-consult {
+  font-size: 12px; color: var(--text-soft); letter-spacing: 0.5px;
+  font-style: italic;
+}
+
+/* Swatches */
+.card-swatches {
+  display: flex; align-items: center; gap: 5px;
+  margin-bottom: 12px; flex-wrap: wrap;
+}
+
+.swatches-label {
+  font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text-xsoft); margin-right: 2px;
+}
+
+.swatch {
+  width: 15px; height: 15px; border-radius: 50%;
+  border: 2px solid white; box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.swatch:hover { transform: scale(1.4); box-shadow: 0 2px 7px rgba(0,0,0,0.18); }
+
+.swatch.selected {
+  outline: 2px solid var(--lav-500); outline-offset: 2px;
+}
+
+/* Tags */
+.card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+
+.tag {
+  font-size: 9px; letter-spacing: 0.8px; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 20px;
+  background: var(--lav-100); color: var(--lav-600);
+  border: 1px solid var(--border2);
+}
+
+/* WA button */
+.btn-wa {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  width: 100%; padding: 11px 16px; border-radius: var(--radius);
+  background: var(--lav-600); color: white;
+  font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 500;
+  letter-spacing: 0.8px; text-transform: uppercase;
+  border: none; cursor: pointer; text-decoration: none;
+  transition: all 0.22s; margin-top: auto;
+  box-shadow: 0 3px 12px rgba(110,74,158,0.20);
+}
+
+.btn-wa:hover {
+  background: var(--lav-700); transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(110,74,158,0.30);
+}
+
+/* ── SEARCH RESULTS ────────────────────────────────── */
+#searchResults {
+  display: none; position: relative; z-index: 1;
+  max-width: 1140px; margin: 0 auto; padding: 0 2rem 20px;
+}
+
+#searchResults.active { display: block; }
+
+.search-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px; font-weight: 300; font-style: italic;
+  color: var(--lav-700); margin-bottom: 22px; padding-top: 12px;
+}
+
+.no-results {
+  text-align: center; padding: 70px 20px;
+}
+
+.no-results-icon { font-size: 40px; margin-bottom: 14px; opacity: 0.3; }
+
+.no-results p {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 300; font-style: italic;
+  color: var(--text-mid); margin-bottom: 8px;
+}
+
+.no-results small {
+  font-family: 'Outfit', sans-serif; font-size: 12.5px;
+  color: var(--text-soft);
+}
+
+/* ── OFFLINE BANNER ────────────────────────────────── */
+#offlineBanner {
+  display: none; position: relative; z-index: 10;
+  background: #fdf5ee; border-bottom: 1px solid rgba(184,150,106,0.3);
+  text-align: center; padding: 12px;
+  font-size: 12.5px; color: #a0783a; letter-spacing: 0.3px;
+}
+
+/* ── BOTTOM CTA BANNER ─────────────────────────────── */
+.bottom-banner {
+  position: relative; z-index: 1;
+  max-width: 1100px; margin: 60px auto 60px;
+  padding: 0 2rem;
+}
+
+.bottom-banner-inner {
+  background: var(--lav-700);
+  border-radius: var(--radius-xl); padding: 52px 40px;
+  text-align: center; position: relative; overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.bottom-banner-inner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, rgba(169,140,212,0.2) 0%, transparent 60%);
+}
+
+.bottom-banner-inner::after {
+  content: '✦';
+  position: absolute; font-size: 180px; opacity: 0.04;
+  right: 20px; top: -20px; line-height: 1;
+  font-family: serif; pointer-events: none; color: white;
+}
+
+.bottom-banner-inner h3 {
+  position: relative; z-index: 1;
+  font-family: 'Playfair Display', serif;
+  font-size: 32px; font-weight: 300; font-style: italic;
+  color: white; margin-bottom: 10px;
+}
+
+.bottom-banner-inner p {
+  position: relative; z-index: 1;
+  font-size: 13px; color: rgba(255,255,255,0.68);
+  letter-spacing: 0.3px; margin-bottom: 26px;
+}
+
+.banner-wa-btn {
+  position: relative; z-index: 1;
+  display: inline-flex; align-items: center; gap: 9px;
+  background: rgba(255,255,255,0.14);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.22);
+  font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 500;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 12px 28px; border-radius: 30px; cursor: pointer;
+  text-decoration: none; transition: all 0.22s; backdrop-filter: blur(4px);
+}
+
+.banner-wa-btn:hover {
+  background: rgba(255,255,255,0.24);
+  transform: translateY(-2px);
+}
+
+/* ── FOOTER ────────────────────────────────────────── */
+footer {
+  position: relative; z-index: 1;
+  text-align: center; padding: 40px 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.footer-mark {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: var(--lav-600);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px; position: relative; overflow: hidden;
+}
+
+.footer-mark::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 55% 30%, rgba(255,255,255,0.2), transparent 55%);
+}
+
+.footer-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 300; font-style: italic;
+  color: var(--lav-700); margin-bottom: 8px;
+}
+
+.footer-divider {
+  width: 32px; height: 1px;
+  background: var(--lav-300); margin: 12px auto;
+}
+
+footer p {
+  font-size: 10.5px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-xsoft);
+}
+
+/* ── WA FLOAT ──────────────────────────────────────── */
+.wa-float {
+  position: fixed; bottom: 24px; right: 24px; z-index: 300;
+  width: 54px; height: 54px; border-radius: 50%;
+  background: var(--lav-600);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 24px rgba(110,74,158,0.35);
+  cursor: pointer; text-decoration: none;
+  transition: all 0.25s;
+  animation: floatBounce 2.5s ease-in-out infinite;
+}
+
+.wa-float:hover {
+  background: var(--lav-700);
+  transform: scale(1.1);
+  animation: none;
+  box-shadow: 0 8px 30px rgba(110,74,158,0.45);
+}
+
+@keyframes floatBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* ── ANIMATIONS ────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ────────────────────────────────────── */
+@media (max-width: 768px) {
+  header { padding: 0 1.25rem; gap: 8px; }
+  .logo-name { font-size: 14px; }
+  .header-nav { display: none; }
+  .search-wrap input { width: 140px; }
+  .search-wrap input:focus { width: 170px; }
+  .hero { padding: 50px 1.25rem 36px; }
+  .catalog-section { grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 1.25rem 14px; }
+  .section-heading { padding: 38px 1.25rem 16px; }
+  .filters-bar { padding: 0 1.25rem; }
+  .bottom-banner { padding: 0 1.25rem; }
+  .bottom-banner-inner { padding: 36px 22px; }
+  .bottom-banner-inner h3 { font-size: 24px; }
+  #searchResults { padding: 0 1.25rem 14px; }
+  .special-inner { padding: 16px 20px; }
+  .wa-float { bottom: 18px; right: 18px; width: 48px; height: 48px; }
+}
+
+@media (max-width: 420px) {
+  .catalog-section { grid-template-columns: 1fr; }
+  .card-img-wrap { height: 180px; }
+}
+</style>
+</head>
+<body>
+
+<script>
+const SUPABASE_URL = 'https://titlxggqfdgwhsrpzlbb.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpdGx4Z2dxZmRnd2hzcnB6bGJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczODgwNzgsImV4cCI6MjA5Mjk2NDA3OH0.0aiE2JVGx-cQZpBG0TjGlPqPH7YzTG5LEP4pgPjDxHA';
+
+const TIENDA = {
+  nombre:      'Firefly Cosmetics',
+  slogan:      'Ilumina tu esencia',
+  whatsapp:    '528771392697',
+  mensajeBase: 'Hola! Vi el catálogo de Firefly Cosmetics y me interesa: '
+};
+
+const FECHAS_ESPECIALES = [
+  {
+    nombre: '💝 San Valentín', emoji: '💝',
+    descripcion: 'Combos especiales para regalar con amor y estilo.',
+    desde: '02-07', hasta: '02-14',
+    mensaje: 'Hola! Me interesa el combo de San Valentín de Firefly Cosmetics 💝 ¿Me pueden dar más info?'
+  },
+  {
+    nombre: '🌸 Día de las Madres', emoji: '🌸',
+    descripcion: 'Celebra a mamá con el regalo perfecto. Combos con amor incluido.',
+    desde: '04-28', hasta: '05-10',
+    mensaje: 'Hola! Quiero saber sobre los combos del Día de las Madres de Firefly Cosmetics 🌸'
+  },
+  {
+    nombre: '🎄 Navidad', emoji: '🎄',
+    descripcion: 'Sets especiales con envoltorio navideño disponibles.',
+    desde: '12-01', hasta: '12-24',
+    mensaje: 'Hola! Me interesan los combos navideños de Firefly Cosmetics 🎄 ¿Qué tienen disponible?'
+  },
+  {
+    nombre: '🎆 Año Nuevo', emoji: '🎆',
+    descripcion: 'Empieza el año brillando. Sets especiales para el 31.',
+    desde: '12-26', hasta: '01-01',
+    mensaje: 'Hola! Quiero info sobre los combos de Año Nuevo de Firefly Cosmetics 🎆'
+  }
+];
+</script>
+
+<!-- LOADING -->
+<div id="loadingScreen">
+  <div class="loading-glyph">
+    <svg viewBox="0 0 28 28" fill="none">
+      <ellipse cx="14" cy="17" rx="5" ry="7" fill="rgba(255,255,255,0.95)"/>
+      <ellipse cx="14" cy="17" rx="3" ry="5" fill="rgba(160,130,210,0.55)"/>
+      <path d="M14 10 C11 6 7 5 8 2 C10 0 14 3 14 10Z" fill="rgba(255,255,255,0.8)"/>
+      <path d="M14 10 C17 6 21 5 20 2 C18 0 14 3 14 10Z" fill="rgba(255,255,255,0.6)"/>
+      <circle cx="14" cy="13" r="2" fill="rgba(255,255,255,0.9)"/>
+    </svg>
+  </div>
+  <div class="loading-name">Firefly Cosmetics</div>
+  <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+</div>
+
+<!-- OFFLINE -->
+<div id="offlineBanner">⚠ No se pudo cargar el catálogo. Verifica tu conexión a internet.</div>
+
+<!-- HEADER -->
+<header>
+  <a class="logo-area" href="#">
+    <div class="logo-mark">
+      <svg viewBox="0 0 18 18" fill="none">
+        <ellipse cx="9" cy="11" rx="3.5" ry="5" fill="rgba(255,255,255,0.95)"/>
+        <ellipse cx="9" cy="11" rx="2" ry="3.5" fill="rgba(160,130,210,0.5)"/>
+        <path d="M9 6 C7 3 4 3 5 1 C6.5 -0.5 9 2 9 6Z" fill="rgba(255,255,255,0.8)"/>
+        <path d="M9 6 C11 3 14 3 13 1 C11.5 -0.5 9 2 9 6Z" fill="rgba(255,255,255,0.6)"/>
+        <circle cx="9" cy="8" r="1.4" fill="white"/>
+      </svg>
+    </div>
+    <div class="logo-text-wrap">
+      <span class="logo-name">Firefly Cosmetics</span>
+      <span class="logo-sub">Catálogo Oficial</span>
+    </div>
+  </a>
+  <div class="header-right">
+    <div class="search-wrap">
+      <span class="search-icon">◎</span>
+      <input type="text" id="searchInput" placeholder="Buscar productos…" oninput="handleSearch(this.value)">
+    </div>
+    <nav class="header-nav" id="mainNav"></nav>
+  </div>
+</header>
+
+<!-- SPECIAL BANNER -->
+<div id="special-banner">
+  <div class="special-inner" id="specialInner">
+    <div class="special-text">
+      <h3 id="specialTitle"></h3>
+      <p id="specialDesc"></p>
+    </div>
+    <a id="specialBtn" class="special-btn" target="_blank">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.053 22l4.948-1.303A9.935 9.935 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z" fill-rule="evenodd"/></svg>
+      Ver combo
+    </a>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">✦ Catálogo Oficial ✦</div>
+  <h1>Ilumina tu<br><em>esencia única</em></h1>
+  <p>Una selección cuidadosa de productos para realzar tu belleza natural con elegancia.</p>
+</section>
+
+<!-- FILTER PILLS -->
+<div class="filters-bar" id="filtersBar">
+  <button class="filter-pill active" data-cat="todos" onclick="filtrar('todos', this)">Todos</button>
+</div>
+
+<!-- SEARCH RESULTS -->
+<div id="searchResults"></div>
+
+<!-- CATALOG -->
+<div id="catalogoRoot"></div>
+
+<!-- BOTTOM BANNER -->
+<div class="bottom-banner">
+  <div class="bottom-banner-inner">
+    <h3>¿No encontraste lo que buscas?</h3>
+    <p>Escríbenos directo y con gusto te asesoramos sin compromiso.</p>
+    <a id="bannerWaBtn" class="banner-wa-btn" target="_blank">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.053 22l4.948-1.303A9.935 9.935 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z" fill-rule="evenodd"/></svg>
+      Escribir por WhatsApp
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-mark">
+    <svg viewBox="0 0 18 18" fill="none" width="18" height="18">
+      <ellipse cx="9" cy="11" rx="3.5" ry="5" fill="rgba(255,255,255,0.95)"/>
+      <ellipse cx="9" cy="11" rx="2" ry="3.5" fill="rgba(160,130,210,0.5)"/>
+      <path d="M9 6 C7 3 4 3 5 1 C6.5 -0.5 9 2 9 6Z" fill="rgba(255,255,255,0.8)"/>
+      <path d="M9 6 C11 3 14 3 13 1 C11.5 -0.5 9 2 9 6Z" fill="rgba(255,255,255,0.6)"/>
+      <circle cx="9" cy="8" r="1.4" fill="white"/>
+    </svg>
+  </div>
+  <div class="footer-name">Firefly Cosmetics</div>
+  <div class="footer-divider"></div>
+  <p>Catálogo de Maquillaje &amp; Accesorios</p>
+  <p style="margin-top:6px">© 2026 — Ing. Librado</p>
+</footer>
+
+<!-- WA FLOAT -->
+<a id="waFloat" class="wa-float" target="_blank" title="Escríbenos por WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+    <path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.053 22l4.948-1.303A9.935 9.935 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z" fill-rule="evenodd"/>
+  </svg>
+</a>
+
+<script>
+/* ── HELPERS ── */
+function waLink(msg) {
+  return `https://wa.me/${TIENDA.whatsapp}?text=${encodeURIComponent(msg)}`;
+}
+
+function svgWA() {
+  return `<svg width="15" height="15" viewBox="0 0 24 24" fill="white">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+    <path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.053 22l4.948-1.303A9.935 9.935 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z" fill-rule="evenodd"/>
+  </svg>`;
+}
+
+/* ── STATE ── */
+let CATEGORIAS = [];
+let PRODUCTOS  = [];
+let sb = null;
+const tonosSeleccionados = {};
+
+/* ── INIT ── */
+async function init() {
+  document.getElementById('waFloat').href    = waLink(TIENDA.mensajeBase);
+  document.getElementById('bannerWaBtn').href = waLink(TIENDA.mensajeBase);
+
+  detectarFechaEspecial();
+
+  try {
+    sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const [
+      { data: cats,  error: catsErr  },
+      { data: prods, error: prodsErr }
+    ] = await Promise.all([
+      sb.from('categorias').select('*').order('orden'),
+      sb.from('productos').select('*, categorias(id,nombre,emoji,slug)').eq('activo', true).order('orden')
+    ]);
+
+    if (catsErr || prodsErr) throw catsErr || prodsErr;
+
+    CATEGORIAS = cats  || [];
+    PRODUCTOS  = prods || [];
+
+    buildUI();
+
+  } catch (e) {
+    console.error('Error cargando catálogo:', e);
+    document.getElementById('offlineBanner').style.display = 'block';
+  }
+
+  /* fade out loading */
+  const ls = document.getElementById('loadingScreen');
+  ls.style.opacity = '0';
+  setTimeout(() => ls.style.display = 'none', 500);
+}
+
+/* ── BUILD UI ── */
+function buildUI() {
+  const nav        = document.getElementById('mainNav');
+  const filtersBar = document.getElementById('filtersBar');
+  const root       = document.getElementById('catalogoRoot');
+
+  CATEGORIAS.forEach(cat => {
+    const hasProducts = PRODUCTOS.some(p => p.categoria_id === cat.id);
+    if (!hasProducts) return;
+
+    /* Header nav button */
+    const nb = document.createElement('button');
+    nb.textContent  = (cat.emoji ? cat.emoji + ' ' : '') + cat.nombre;
+    nb.dataset.cat  = cat.id;
+    nb.onclick      = () => filtrar(cat.id, nb);
+    nav.appendChild(nb);
+
+    /* Filter pill */
+    const pill = document.createElement('button');
+    pill.className     = 'filter-pill';
+    pill.textContent   = (cat.emoji ? cat.emoji + ' ' : '') + cat.nombre;
+    pill.dataset.cat   = cat.id;
+    pill.onclick       = () => filtrar(cat.id, pill);
+    filtersBar.appendChild(pill);
+
+    /* Section heading */
+    const pCount = PRODUCTOS.filter(p => p.categoria_id === cat.id).length;
+    const heading = document.createElement('div');
+    heading.className = 'section-heading';
+    heading.setAttribute('data-section', cat.id);
+    heading.innerHTML = `<h2>${cat.emoji || ''} ${cat.nombre}</h2><span class="section-count">${pCount} producto${pCount !== 1 ? 's' : ''}</span>`;
+    root.appendChild(heading);
+
+    /* Product grid */
+    const grid = document.createElement('div');
+    grid.className = 'catalog-section';
+    grid.setAttribute('data-grid', cat.id);
+
+    PRODUCTOS
+      .filter(p => p.categoria_id === cat.id)
+      .forEach((p, i) => grid.appendChild(buildCard(p, i)));
+
+    root.appendChild(grid);
+  });
+}
+
+/* ── BUILD CARD ── */
+function buildCard(p, idx) {
+  const cat  = CATEGORIAS.find(c => c.id === p.categoria_id);
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.setAttribute('data-cat', p.categoria_id || '');
+  card.setAttribute('data-nombre', [p.nombre, p.marca, p.descripcion, ...(p.tags || [])].join(' ').toLowerCase());
+  card.style.animationDelay = (idx * 0.06) + 's';
+
+  /* Image */
+  const imgHtml = p.imagen_url
+    ? `<img src="${p.imagen_url}" alt="${p.nombre}" loading="lazy">`
+    : `<div class="card-emoji-placeholder"><span>${p.emoji || '✦'}</span><small>${p.nombre}</small></div>`;
+
+  /* Badge */
+  const badgeHtml = cat
+    ? `<span class="card-badge">${cat.emoji || ''} ${cat.nombre}</span>`
+    : '';
+
+  /* Swatches */
+  let swatchesHtml = '';
+  if (p.tonos && p.tonos.length) {
+    const items = p.tonos.map(color =>
+      `<span class="swatch" style="background:${color}" data-pid="${p.id}"
+        onclick="seleccionarTono(this,'${p.id}','${color}')" title="${color}"></span>`
+    ).join('');
+    swatchesHtml = `<div class="card-swatches"><span class="swatches-label">Tonos</span>${items}</div>`;
+  }
+
+  /* Tags */
+  let tagsHtml = '';
+  if (p.tags && p.tags.length) {
+    tagsHtml = `<div class="card-tags">${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>`;
+  }
+
+  /* Price */
+  const precio    = parseFloat(p.precio) || 0;
+  const precioAnt = parseFloat(p.precio_anterior) || 0;
+  const precioHtml = precio > 0
+    ? `<div class="card-price">
+        <span class="price-main">$${precio.toLocaleString('es-MX')}</span>
+        <span class="price-currency">MXN</span>
+        ${precioAnt > 0 ? `<span class="price-before">$${precioAnt.toLocaleString('es-MX')}</span>` : ''}
+       </div>`
+    : `<div class="card-price"><span class="price-consult">Consultar precio</span></div>`;
+
+  const marcaHtml = p.marca ? `<div class="card-brand">${p.marca}</div>` : '';
+  const msgWA     = `${TIENDA.mensajeBase}*${p.nombre}*${p.marca ? ' (' + p.marca + ')' : ''}.`;
+
+  card.innerHTML = `
+    <div class="card-img-wrap">${imgHtml}</div>
+    ${badgeHtml}
+    <div class="card-body">
+      ${marcaHtml}
+      <div class="card-title">${p.nombre}</div>
+      <div class="card-desc">${p.descripcion || ''}</div>
+      ${tagsHtml}
+      ${swatchesHtml}
+      ${precioHtml}
+      <a class="btn-wa" id="btnWa-${p.id}" href="${waLink(msgWA)}" target="_blank">
+        ${svgWA()} Pedir por WhatsApp
+      </a>
+    </div>`;
+
+  return card;
+}
+
+/* ── SELECT TONE ── */
+function seleccionarTono(el, pid, color) {
+  document.querySelectorAll(`.swatch[data-pid="${pid}"]`).forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  tonosSeleccionados[pid] = color;
+  const prod = PRODUCTOS.find(p => p.id === pid);
+  if (!prod) return;
+  const msg = `${TIENDA.mensajeBase}*${prod.nombre}* en el tono *${color}*.`;
+  const btn = document.getElementById(`btnWa-${pid}`);
+  if (btn) btn.href = waLink(msg);
+}
+
+/* ── FILTER ── */
+function filtrar(cat, clickedEl) {
+  /* Clear search */
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchResults').classList.remove('active');
+  document.getElementById('searchResults').innerHTML = '';
+  document.getElementById('catalogoRoot').style.display = '';
+  document.querySelectorAll('.section-heading, .catalog-section').forEach(el => el.style.display = '');
+
+  const allCards = document.querySelectorAll('.card');
+
+  if (cat === 'todos') {
+    allCards.forEach((c, i) => {
+      c.style.display = '';
+      void c.offsetWidth;
+      c.style.animationDelay = (i * 0.05) + 's';
+      c.style.animation = 'none';
+      requestAnimationFrame(() => c.style.animation = 'fadeUp 0.5s ease both');
+    });
+    document.querySelectorAll('[data-section],[data-grid]').forEach(s => s.style.display = '');
+  } else {
+    allCards.forEach(c => { c.style.display = c.dataset.cat === cat ? '' : 'none'; });
+    document.querySelectorAll('[data-section]').forEach(s => { s.style.display = s.dataset.section === cat ? '' : 'none'; });
+    document.querySelectorAll('[data-grid]').forEach(g => { g.style.display = g.dataset.grid === cat ? '' : 'none'; });
+    document.querySelectorAll(`.card[data-cat="${cat}"]`).forEach((c, i) => {
+      c.style.animationDelay = (i * 0.06) + 's';
+      c.style.animation = 'none';
+      requestAnimationFrame(() => c.style.animation = 'fadeUp 0.5s ease both');
+    });
+  }
+
+  document.querySelectorAll('.filter-pill, .header-nav button').forEach(b => b.classList.remove('active'));
+  if (clickedEl) {
+    clickedEl.classList.add('active');
+    document.querySelectorAll(`[data-cat="${cat}"]`).forEach(b => b.classList.add('active'));
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── SEARCH ── */
+let searchTimer = null;
+
+function handleSearch(q) {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => doSearch(q.trim().toLowerCase()), 200);
+}
+
+function doSearch(q) {
+  const resultsWrap = document.getElementById('searchResults');
+  const root        = document.getElementById('catalogoRoot');
+
+  if (!q) {
+    resultsWrap.classList.remove('active');
+    resultsWrap.innerHTML = '';
+    root.style.display = '';
+    document.querySelectorAll('.section-heading').forEach(el => el.style.display = '');
+    document.querySelectorAll('.filter-pill, .header-nav button').forEach(b => b.classList.remove('active'));
+    const todosBtn = document.querySelector('[data-cat="todos"]');
+    if (todosBtn) todosBtn.classList.add('active');
+    return;
+  }
+
+  root.style.display = 'none';
+  document.querySelectorAll('.section-heading').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.filter-pill, .header-nav button').forEach(b => b.classList.remove('active'));
+
+  const matches = PRODUCTOS.filter(p => {
+    const text = [p.nombre, p.marca, p.descripcion, ...(p.tags || [])].join(' ').toLowerCase();
+    return text.includes(q);
+  });
+
+  if (!matches.length) {
+    resultsWrap.innerHTML = `
+      <div class="search-heading">Resultados para "${q}"</div>
+      <div class="no-results">
+        <div class="no-results-icon">◎</div>
+        <p>Sin resultados para "${q}"</p>
+        <small>Intenta con otras palabras o escríbenos por WhatsApp.</small>
+      </div>`;
+    resultsWrap.classList.add('active');
+    return;
+  }
+
+  const grid = document.createElement('div');
+  grid.className = 'catalog-section';
+  matches.forEach((p, i) => grid.appendChild(buildCard(p, i)));
+
+  resultsWrap.innerHTML = `<div class="search-heading">◎ "${q}" — ${matches.length} resultado${matches.length !== 1 ? 's' : ''}</div>`;
+  resultsWrap.appendChild(grid);
+  resultsWrap.classList.add('active');
+}
+
+/* ── SPECIAL DATE BANNER ── */
+function detectarFechaEspecial() {
+  const hoy  = new Date();
+  const mm   = String(hoy.getMonth() + 1).padStart(2, '0');
+  const dd   = String(hoy.getDate()).padStart(2, '0');
+  const hoyStr = `${mm}-${dd}`;
+
+  const activa = FECHAS_ESPECIALES.find(f => {
+    if (f.desde <= f.hasta) return hoyStr >= f.desde && hoyStr <= f.hasta;
+    return hoyStr >= f.desde || hoyStr <= f.hasta;
+  });
+
+  if (activa) {
+    document.getElementById('specialTitle').textContent = activa.nombre;
+    document.getElementById('specialDesc').textContent  = activa.descripcion;
+    document.getElementById('specialInner').setAttribute('data-emoji', activa.emoji);
+    document.getElementById('specialBtn').href = waLink(activa.mensaje);
+    document.getElementById('special-banner').classList.add('visible');
+  }
+}
+
+/* ── BOOT ── */
+init();
+</script>
+</body>
+</html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neli's Make'Up — Catálogo</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
