@@ -724,12 +724,12 @@ const TIENDA = {
   mensajeBase: 'Hola! Vi el catálogo de Firefly Cosmetics y me interesa: '
 };
 
-const FECHAS_ESPECIALES = [
-  { nombre: '💝 San Valentín', emoji: '💝', descripcion: 'Combos especiales para regalar con amor y estilo.', desde: '02-07', hasta: '02-14', mensaje: 'Hola! Me interesa el combo de San Valentín de Firefly Cosmetics 💝' },
-  { nombre: '🌸 Día de las Madres', emoji: '🌸', descripcion: 'Celebra a mamá con el regalo perfecto.', desde: '04-28', hasta: '05-10', mensaje: 'Hola! Quiero los combos del Día de las Madres de Firefly Cosmetics 🌸' },
-  { nombre: '🎄 Navidad', emoji: '🎄', descripcion: 'Sets especiales con envoltorio navideño.', desde: '12-01', hasta: '12-24', mensaje: 'Hola! Me interesan los combos navideños de Firefly Cosmetics 🎄' },
-  { nombre: '🎆 Año Nuevo', emoji: '🎆', descripcion: 'Empieza el año brillando. Sets especiales.', desde: '12-26', hasta: '01-01', mensaje: 'Hola! Quiero info sobre los combos de Año Nuevo de Firefly Cosmetics 🎆' }
-];
+//const FECHAS_ESPECIALES = [
+ // { nombre: '💝 San Valentín', emoji: '💝', descripcion: 'Combos especiales para regalar con amor y estilo.', desde: '02-07', hasta: '02-14', mensaje: 'Hola! Me interesa el combo de San Valentín de Firefly Cosmetics 💝' },
+ // { nombre: '🌸 Día de las Madres', emoji: '🌸', descripcion: 'Celebra a mamá con el regalo perfecto.', desde: '04-28', hasta: '05-10', mensaje: 'Hola! Quiero los combos del Día de las Madres de Firefly Cosmetics 🌸' },
+ // { nombre: '🎄 Navidad', emoji: '🎄', descripcion: 'Sets especiales con envoltorio navideño.', desde: '12-01', hasta: '12-24', mensaje: 'Hola! Me interesan los combos navideños de Firefly Cosmetics 🎄' },
+ // { nombre: '🎆 Año Nuevo', emoji: '🎆', descripcion: 'Empieza el año brillando. Sets especiales.', desde: '12-26', hasta: '01-01', mensaje: 'Hola! Quiero info sobre los combos de Año Nuevo de Firefly Cosmetics 🎆' }
+//];
 </script>
 
 <!-- LOADING -->
@@ -870,9 +870,13 @@ const FECHAS_ESPECIALES = [
       <span class="cart-total-amount" id="cartTotal">$0</span>
     </div>
     <div class="cart-name-wrap">
-      <label>Tu nombre (para el pedido)</label>
-      <input type="text" id="clientName" placeholder="Ej: María López">
-    </div>
+  <label>Tu nombre *</label>
+  <input type="text" id="clientName" placeholder="Ej: María López">
+</div>
+<div class="cart-name-wrap">
+  <label>Tu WhatsApp / Teléfono *</label>
+  <input type="tel" id="clientPhone" placeholder="Ej: 8771234567">
+</div>
     <button class="btn-checkout" id="checkoutBtn" onclick="checkout()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.053 22l4.948-1.303A9.935 9.935 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z" fill-rule="evenodd"/></svg>
       Enviar Pedido por WhatsApp
@@ -1198,13 +1202,17 @@ function closeCart() { document.getElementById('cartDrawer').classList.remove('o
 
 async function checkout() {
   if (!cart.length) return;
-  const clientName = document.getElementById('clientName').value.trim() || 'Cliente';
+  const clientName  = document.getElementById('clientName').value.trim();
+const clientPhone = document.getElementById('clientPhone').value.trim();
+
+if (!clientName)  { alert('Por favor escribe tu nombre.'); btn.disabled = false; btn.innerHTML = `${svgWA()} Enviar Pedido por WhatsApp`; return; }
+if (!clientPhone) { alert('Por favor escribe tu número de teléfono.'); btn.disabled = false; btn.innerHTML = `${svgWA()} Enviar Pedido por WhatsApp`; return; }
   const btn = document.getElementById('checkoutBtn');
   btn.disabled = true;
   btn.textContent = 'Enviando…';
 
   // Build WA message
-  let lines = [`🛍 *Pedido - Firefly Cosmetics*`, `👤 *Cliente:* ${clientName}`, ``, `*Productos:*`];
+  let lines = [`🛍 *Pedido - Firefly Cosmetics*`, `👤 *Cliente:* ${clientName}`, `📞 *Teléfono:* ${clientPhone}`, ``, `*Productos:*`];
   cart.forEach((item, i) => {
     const p = item.prod;
     const precio = parseFloat(p.precio) > 0 ? `$${parseFloat(p.precio).toLocaleString('es-MX')} MXN` : 'Consultar';
@@ -1222,6 +1230,7 @@ async function checkout() {
   try {
     await sb.from('pedidos').insert({
       cliente_nombre: clientName,
+      cliente_telefono: clientPhone,
       items: cart.map(i => ({
         producto_id:   i.prod.id,
         producto_nombre: i.prod.nombre,
