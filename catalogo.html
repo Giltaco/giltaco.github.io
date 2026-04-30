@@ -237,7 +237,23 @@ header {
 .no-results small { font-size: 12.5px; color: var(--text-soft); }
 
 /* ── OFFLINE ── */
-#offlineBanner { display: none; position: relative; z-index: 10; background: #fdf5ee; border-bottom: 1px solid rgba(184,150,106,0.3); text-align: center; padding: 12px; font-size: 12.5px; color: #a0783a; }
+#offlineBanner {
+  display: none; position: relative; z-index: 10;
+  background: #fdf5ee; border-bottom: 1px solid rgba(184,150,106,0.3);
+  text-align: center; padding: 14px 2rem;
+  font-size: 12.5px; color: #a0783a;
+}
+#offlineBanner a { color: var(--lav-600); text-decoration: underline; font-weight: 500; }
+
+/* ── EMPTY CATALOG ── */
+.catalog-empty-state {
+  position: relative; z-index: 1;
+  text-align: center; padding: 80px 2rem;
+  max-width: 480px; margin: 0 auto;
+}
+.catalog-empty-state .empty-icon { font-size: 54px; margin-bottom: 16px; opacity: 0.3; }
+.catalog-empty-state p { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 300; font-style: italic; color: var(--text-mid); margin-bottom: 10px; }
+.catalog-empty-state small { font-size: 13px; color: var(--text-soft); line-height: 1.6; }
 
 /* ── CART DRAWER ── */
 .cart-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(30,21,48,0.35); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity 0.3s; }
@@ -279,9 +295,7 @@ header {
 .btn-checkout:hover { background: var(--lav-700); transform: translateY(-1px); }
 .btn-checkout:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-/* ══════════════════════════════════════════
-   PRODUCT DETAIL OVERLAY (tipo Mercado Libre)
-══════════════════════════════════════════ */
+/* ── PRODUCT DETAIL OVERLAY ── */
 .pd-overlay {
   position: fixed; inset: 0; z-index: 600;
   background: rgba(20,13,35,0.55);
@@ -309,7 +323,6 @@ header {
 }
 .pd-overlay.open .pd-modal { transform: translateY(0); }
 
-/* Header del modal */
 .pd-topbar {
   display: flex; align-items: center; justify-content: space-between;
   padding: 16px 20px; border-bottom: 1px solid var(--border);
@@ -331,7 +344,6 @@ header {
 }
 .pd-close-btn:hover { background: var(--lav-100); color: var(--lav-600); }
 
-/* Cuerpo del modal */
 .pd-body {
   display: grid;
   grid-template-columns: 1fr;
@@ -341,7 +353,6 @@ header {
   .pd-body { grid-template-columns: 1fr 1fr; gap: 0; }
 }
 
-/* ── GALERÍA izquierda ── */
 .pd-gallery { padding: 0; background: var(--lav-100); position: relative; }
 @media (min-width: 700px) { .pd-gallery { min-height: 480px; } }
 
@@ -361,7 +372,6 @@ header {
 }
 .pd-main-placeholder span { font-size: 80px; opacity: 0.5; }
 
-/* Thumbnails */
 .pd-thumbs {
   display: flex; gap: 8px; padding: 12px 16px;
   overflow-x: auto; background: var(--surface); border-top: 1px solid var(--border);
@@ -380,14 +390,13 @@ header {
 .pd-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .pd-thumb-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 22px; }
 
-/* Arrows sobre imagen principal */
 .pd-arrow {
   position: absolute; top: 50%; transform: translateY(-50%);
   width: 34px; height: 34px; border-radius: 50%;
   background: rgba(255,255,255,0.9); border: 1px solid var(--border2);
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; z-index: 5; font-size: 14px; color: var(--lav-700);
-  transition: all 0.18s; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
   opacity: 0; transition: opacity 0.2s;
 }
 .pd-main-img-wrap:hover .pd-arrow { opacity: 1; }
@@ -395,7 +404,6 @@ header {
 .pd-arrow-next { right: 12px; }
 .pd-arrow:hover { background: white; box-shadow: 0 4px 14px rgba(0,0,0,0.18); }
 
-/* ── INFO derecha ── */
 .pd-info { padding: 28px 26px 32px; display: flex; flex-direction: column; gap: 18px; }
 
 .pd-cat-tag {
@@ -407,7 +415,6 @@ header {
 .pd-title { font-family: 'Playfair Display', serif; font-size: clamp(22px, 3vw, 30px); font-weight: 400; color: var(--lav-800); line-height: 1.2; }
 .pd-brand { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-soft); margin-top: -10px; }
 
-/* Precio */
 .pd-price-block { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .pd-price { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 400; color: var(--lav-600); }
 .pd-currency { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-soft); }
@@ -420,17 +427,13 @@ header {
 .pd-agotado-banner span { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: #c0392b; font-weight: 600; }
 .pd-agotado-banner p { font-size: 12px; color: #a93226; margin-top: 2px; }
 
-/* Divider */
 .pd-divider { height: 1px; background: var(--border); }
 
-/* Descripción */
 .pd-desc { font-size: 13.5px; color: var(--text-mid); line-height: 1.75; }
 
-/* Tags */
 .pd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .pd-tag { font-size: 10px; letter-spacing: 0.8px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; background: var(--lav-100); color: var(--lav-600); border: 1px solid var(--border2); }
 
-/* Tonos */
 .pd-tonos-label { font-size: 10px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--text-mid); margin-bottom: 10px; font-weight: 500; }
 .pd-tonos-selected { font-size: 11px; color: var(--text-soft); margin-bottom: 8px; }
 .pd-swatches { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -442,7 +445,6 @@ header {
 .pd-swatch:hover { transform: scale(1.25); box-shadow: 0 3px 10px rgba(0,0,0,0.2); }
 .pd-swatch.selected { outline: 2.5px solid var(--lav-500); outline-offset: 3px; transform: scale(1.1); }
 
-/* Acciones */
 .pd-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
 .pd-btn-cart {
   display: flex; align-items: center; justify-content: center; gap: 9px;
@@ -552,7 +554,10 @@ const FECHAS_ESPECIALES = [
   <div class="loading-bar"><div class="loading-bar-fill"></div></div>
 </div>
 
-<div id="offlineBanner">⚠ No se pudo cargar el catálogo. Verifica tu conexión.</div>
+<div id="offlineBanner">
+  ⚠ No se pudo cargar el catálogo. Verifica tu conexión o
+  <a href="javascript:location.reload()">intenta de nuevo</a>.
+</div>
 
 <!-- HEADER -->
 <header>
@@ -697,14 +702,10 @@ const FECHAS_ESPECIALES = [
       <button class="pd-close-btn" onclick="closePD()">✕</button>
     </div>
     <div class="pd-body">
-      <!-- Galería -->
       <div class="pd-gallery" id="pdGallery">
-        <div class="pd-main-img-wrap" id="pdMainImgWrap">
-          <!-- se llena dinámicamente -->
-        </div>
+        <div class="pd-main-img-wrap" id="pdMainImgWrap"></div>
         <div class="pd-thumbs" id="pdThumbs"></div>
       </div>
-      <!-- Info -->
       <div class="pd-info" id="pdInfoPane"></div>
     </div>
   </div>
@@ -723,28 +724,74 @@ function svgWA(color='white') {
   return `<svg width="15" height="15" viewBox="0 0 24 24" fill="${color}"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.053 22l4.948-1.303A9.935 9.935 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z" fill-rule="evenodd"/></svg>`;
 }
 
-/* ── INIT ── */
+/* ─────────────────────────────────────────
+   INIT — carga resiliente con fallbacks
+───────────────────────────────────────── */
 async function init() {
   document.getElementById('waFloat').href     = waLink(TIENDA.mensajeBase);
   document.getElementById('bannerWaBtn').href = waLink(TIENDA.mensajeBase);
   detectarFechaEspecial();
+
   try {
     sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    const [
-      { data: cats,  error: catsErr  },
-      { data: prods, error: prodsErr }
-    ] = await Promise.all([
-      sb.from('categorias').select('*').order('orden'),
-      sb.from('productos').select('*, categorias(id,nombre,emoji,slug)').order('orden')
-    ]);
-    if (catsErr || prodsErr) throw catsErr || prodsErr;
+
+    /* ── Categorías con fallback de orden ── */
+    let cats = null;
+    const catsOrdenado = await sb.from('categorias').select('*').order('orden');
+    if (!catsOrdenado.error) {
+      cats = catsOrdenado.data;
+    } else {
+      // Si la columna 'orden' no existe, intenta sin orden
+      const catsSinOrden = await sb.from('categorias').select('*');
+      if (catsSinOrden.error) throw catsSinOrden.error;
+      cats = catsSinOrden.data;
+    }
+
+    /* ── Productos con fallback ── */
+    let prods = null;
+    const prodsOrdenado = await sb.from('productos')
+      .select('*, categorias(id,nombre,emoji,slug)')
+      .order('orden');
+    if (!prodsOrdenado.error) {
+      prods = prodsOrdenado.data;
+    } else {
+      // Fallback: sin orden específico
+      const prodsSinOrden = await sb.from('productos')
+        .select('*, categorias(id,nombre,emoji,slug)');
+      if (!prodsSinOrden.error) {
+        prods = prodsSinOrden.data;
+      } else {
+        // Último fallback: sin join de categorías
+        const prodsSimple = await sb.from('productos').select('*');
+        if (prodsSimple.error) throw prodsSimple.error;
+        prods = prodsSimple.data;
+      }
+    }
+
     CATEGORIAS = cats  || [];
     PRODUCTOS  = prods || [];
-    buildUI();
+
+    if (!CATEGORIAS.length && !PRODUCTOS.length) {
+      // Datos vacíos pero conexión OK — mostrar estado vacío
+      document.getElementById('catalogoRoot').innerHTML = `
+        <div class="catalog-empty-state">
+          <div class="empty-icon">✦</div>
+          <p>El catálogo está vacío</p>
+          <small>Pronto habrá productos disponibles. Escríbenos por WhatsApp para más información.</small>
+        </div>`;
+    } else {
+      buildUI();
+    }
+
   } catch(e) {
-    console.error(e);
-    document.getElementById('offlineBanner').style.display = 'block';
+    console.error('Error cargando catálogo:', e);
+    const banner = document.getElementById('offlineBanner');
+    banner.style.display = 'block';
+    banner.innerHTML = `⚠ No se pudo cargar el catálogo (${e.message || 'error de conexión'}).
+      <a href="javascript:location.reload()">Intentar de nuevo</a>`;
   }
+
+  /* Ocultar loading siempre */
   const ls = document.getElementById('loadingScreen');
   ls.style.opacity = '0';
   setTimeout(() => ls.style.display = 'none', 500);
@@ -786,9 +833,21 @@ function buildUI() {
     PRODUCTOS.filter(p => p.categoria_id === cat.id).forEach((p,i) => grid.appendChild(buildCard(p,i)));
     root.appendChild(grid);
   });
+
+  // Si hay productos pero sin categorías, mostrarlos todos en una sección
+  if (!CATEGORIAS.length && PRODUCTOS.length) {
+    const heading = document.createElement('div');
+    heading.className = 'section-heading';
+    heading.innerHTML = `<h2>✦ Productos</h2><span class="section-count">${PRODUCTOS.length} producto${PRODUCTOS.length!==1?'s':''}</span>`;
+    root.appendChild(heading);
+    const grid = document.createElement('div');
+    grid.className = 'catalog-section';
+    PRODUCTOS.forEach((p,i) => grid.appendChild(buildCard(p,i)));
+    root.appendChild(grid);
+  }
 }
 
-/* ── CARD (versión limpia — clic abre detalle) ── */
+/* ── CARD ── */
 function buildCard(p, idx) {
   const cat    = CATEGORIAS.find(c => c.id === p.categoria_id);
   const card   = document.createElement('div');
@@ -800,7 +859,6 @@ function buildCard(p, idx) {
   card.setAttribute('data-pid', p.id);
   card.style.animationDelay = (idx * 0.06) + 's';
 
-  // Imágenes
   let images = [];
   if (p.imagenes_extra && Array.isArray(p.imagenes_extra) && p.imagenes_extra.length > 0) images = p.imagenes_extra;
   else if (p.imagen_url) images = [p.imagen_url];
@@ -835,22 +893,17 @@ function buildCard(p, idx) {
       </div>
     </div>`;
 
-  // Clic en la tarjeta también abre el detalle
   card.addEventListener('click', () => openPD(p.id));
-
   return card;
 }
 
-/* ══════════════════════════════
-   PRODUCT DETAIL (tipo ML)
-══════════════════════════════ */
+/* ── PRODUCT DETAIL ── */
 function openPD(pid) {
   const p = PRODUCTOS.find(x => x.id === pid);
   if (!p) return;
   pdCurrentProd = p;
   pdCurrentSlide = 0;
 
-  // Build images array
   let imgs = [];
   if (p.imagenes_extra && Array.isArray(p.imagenes_extra) && p.imagenes_extra.length > 0) imgs = p.imagenes_extra;
   else if (p.imagen_url) imgs = [p.imagen_url];
@@ -861,7 +914,6 @@ function openPD(pid) {
 
   document.getElementById('pdOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
-  // Reset tono seleccionado
   tonosSeleccionados['pd_' + pid] = null;
 }
 
@@ -870,19 +922,15 @@ function closePD() {
   document.body.style.overflow = '';
 }
 
-// Cerrar con Escape
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePD(); });
-
-// Cerrar al clic en overlay (fuera del modal)
 document.getElementById('pdOverlay').addEventListener('click', function(e) {
   if (e.target === this) closePD();
 });
 
 function renderPDGallery(p) {
-  const wrap  = document.getElementById('pdMainImgWrap');
-  const thumbs= document.getElementById('pdThumbs');
+  const wrap   = document.getElementById('pdMainImgWrap');
+  const thumbs = document.getElementById('pdThumbs');
 
-  // Main image
   if (pdImages.length > 0) {
     wrap.innerHTML = `
       <img id="pdMainImg" src="${pdImages[0]}" alt="${p.nombre}">
@@ -895,7 +943,6 @@ function renderPDGallery(p) {
     wrap.innerHTML = `<div class="pd-main-placeholder"><span>${p.emoji||'✦'}</span></div>`;
   }
 
-  // Thumbnails
   if (pdImages.length > 1) {
     thumbs.style.display = 'flex';
     thumbs.innerHTML = pdImages.map((url, i) =>
@@ -908,14 +955,8 @@ function renderPDGallery(p) {
   }
 }
 
-function pdGoSlide(idx) {
-  pdCurrentSlide = idx;
-  _pdUpdateGallery();
-}
-function pdSlide(dir) {
-  pdCurrentSlide = (pdCurrentSlide + dir + pdImages.length) % pdImages.length;
-  _pdUpdateGallery();
-}
+function pdGoSlide(idx) { pdCurrentSlide = idx; _pdUpdateGallery(); }
+function pdSlide(dir) { pdCurrentSlide = (pdCurrentSlide + dir + pdImages.length) % pdImages.length; _pdUpdateGallery(); }
 function _pdUpdateGallery() {
   const img = document.getElementById('pdMainImg');
   if (img) img.src = pdImages[pdCurrentSlide];
@@ -927,7 +968,6 @@ function renderPDInfo(p) {
   const precio    = parseFloat(p.precio) || 0;
   const precioAnt = parseFloat(p.precio_anterior) || 0;
   const isAgotado = !p.activo;
-  const key       = 'pd_' + p.id;
 
   let priceHtml;
   if (isAgotado) {
@@ -1025,17 +1065,6 @@ function addToCartFromPD(pid) {
 }
 
 /* ── CART ── */
-function addToCart(e, pid) {
-  e && e.stopPropagation();
-  const prod = PRODUCTOS.find(p => p.id === pid);
-  if (!prod) return;
-  const tono = tonosSeleccionados[pid] || null;
-  const key  = pid + (tono||'');
-  const exist = cart.find(i => i.key === key);
-  if (exist) { exist.qty++; } else { cart.push({ key, prod, qty: 1, tono }); }
-  renderCart();
-}
-
 function removeFromCart(key) { cart = cart.filter(i => i.key !== key); renderCart(); }
 function changeQty(key, delta) {
   const item = cart.find(i => i.key === key);
@@ -1103,9 +1132,13 @@ async function checkout() {
   lines.push(`_Pedido enviado desde el catálogo online_`);
   const waMsg = lines.join('\n');
   try {
-    await sb.from('pedidos').insert({ cliente_nombre: clientName, cliente_telefono: clientPhone,
-      items: cart.map(i => ({ producto_id: i.prod.id, producto_nombre: i.prod.nombre, marca: i.prod.marca||null, precio: parseFloat(i.prod.precio)||0, qty: i.qty, tono: i.tono||null })),
-      total, estado: 'nuevo', mensaje_wa: waMsg });
+    if (sb) {
+      await sb.from('pedidos').insert({
+        cliente_nombre: clientName, cliente_telefono: clientPhone,
+        items: cart.map(i => ({ producto_id: i.prod.id, producto_nombre: i.prod.nombre, marca: i.prod.marca||null, precio: parseFloat(i.prod.precio)||0, qty: i.qty, tono: i.tono||null })),
+        total, estado: 'nuevo', mensaje_wa: waMsg
+      });
+    }
   } catch(e) { console.warn('No se pudo guardar pedido:', e.message); }
   window.open(waLink(waMsg), '_blank');
   cart = []; renderCart(); closeCart();
@@ -1123,13 +1156,13 @@ function filtrar(cat, clickedEl) {
   document.getElementById('catalogoRoot').style.display = '';
   const allCards = document.querySelectorAll('.card');
   if (cat === 'todos') {
-    allCards.forEach((c,i) => { c.style.display=''; c.style.animationDelay=(i*0.05)+'s'; c.style.animation='none'; requestAnimationFrame(()=>c.style.animation='fadeUp 0.5s ease both'); });
+    allCards.forEach((c,i) => { c.style.display=''; c.style.animation='none'; requestAnimationFrame(()=>{ c.style.animationDelay=(i*0.05)+'s'; c.style.animation='fadeUp 0.5s ease both'; }); });
     document.querySelectorAll('[data-section],[data-grid]').forEach(s=>s.style.display='');
   } else {
     allCards.forEach(c=>{c.style.display=c.dataset.cat===cat?'':'none';});
     document.querySelectorAll('[data-section]').forEach(s=>{s.style.display=s.dataset.section===cat?'':'none';});
     document.querySelectorAll('[data-grid]').forEach(g=>{g.style.display=g.dataset.grid===cat?'':'none';});
-    document.querySelectorAll(`.card[data-cat="${cat}"]`).forEach((c,i)=>{ c.style.animationDelay=(i*0.06)+'s'; c.style.animation='none'; requestAnimationFrame(()=>c.style.animation='fadeUp 0.5s ease both'); });
+    document.querySelectorAll(`.card[data-cat="${cat}"]`).forEach((c,i)=>{ c.style.animation='none'; requestAnimationFrame(()=>{ c.style.animationDelay=(i*0.06)+'s'; c.style.animation='fadeUp 0.5s ease both'; }); });
   }
   document.querySelectorAll('.filter-pill, .header-nav button').forEach(b=>b.classList.remove('active'));
   if (clickedEl) { clickedEl.classList.add('active'); document.querySelectorAll(`[data-cat="${cat}"]`).forEach(b=>b.classList.add('active')); }
