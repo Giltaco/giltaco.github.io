@@ -29,6 +29,7 @@
     --danger:    #c0392b;
     --success:   #2e7d32;
     --warning:   #e67e22;
+    --agotado:   #7f5a00;
     --glow:      0 0 0 3px rgba(169,140,212,0.22);
     --shadow-sm: 0 2px 12px rgba(100,70,170,0.06);
     --shadow-md: 0 8px 32px rgba(100,70,170,0.10);
@@ -171,12 +172,14 @@
   .btn-success:hover { background: var(--success); color: white; }
   .btn-warning { background: #fef3e2; color: var(--warning); border: 1px solid rgba(230,126,34,0.2); }
   .btn-warning:hover { background: var(--warning); color: white; }
+  .btn-agotado { background: #fff8e6; color: var(--agotado); border: 1px solid rgba(127,90,0,0.2); }
+  .btn-agotado:hover { background: #f59e0b; color: white; }
   .btn-sm { padding: 5px 11px; font-size: 11.5px; border-radius: 7px; }
 
   /* ── MODAL ── */
   .modal-overlay { position: fixed; inset: 0; background: rgba(30,21,48,0.35); backdrop-filter: blur(6px); z-index: 500; display: flex; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal { background: var(--surface); border-radius: 22px; width: 100%; max-width: 640px; margin: auto; box-shadow: var(--shadow-lg); border: 1px solid var(--border); overflow: hidden; transform: translateY(18px); transition: transform 0.25s; }
+  .modal { background: var(--surface); border-radius: 22px; width: 100%; max-width: 680px; margin: auto; box-shadow: var(--shadow-lg); border: 1px solid var(--border); overflow: hidden; transform: translateY(18px); transition: transform 0.25s; }
   .modal-overlay.open .modal { transform: translateY(0); }
   .modal-head { padding: 22px 26px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
   .modal-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 400; color: var(--lav-700); font-style: italic; }
@@ -201,30 +204,50 @@
   .upload-progress { background: var(--lav-100); border-radius: 6px; height: 4px; overflow: hidden; margin-top: 8px; display: none; }
   .upload-bar { height: 100%; background: linear-gradient(90deg, var(--lav-500), var(--lav-400)); border-radius: 6px; width: 0%; transition: width 0.3s; }
 
-  /* ── MULTI-IMAGE UPLOAD ── */
+  /* ── MULTI-IMAGE UPLOAD (mejorado) ── */
+  .multi-img-section {
+    border: 1px solid var(--border2); border-radius: 12px;
+    padding: 14px; background: var(--lav-100);
+  }
+  .multi-img-section-title {
+    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text-soft); margin-bottom: 10px; font-weight: 500;
+  }
   .multi-img-grid {
     display: flex; flex-wrap: wrap; gap: 8px;
     margin-bottom: 8px;
   }
   .multi-img-thumb {
-    width: 72px; height: 72px; border-radius: 10px; position: relative;
+    width: 80px; height: 80px; border-radius: 10px; position: relative;
     border: 1px solid var(--border2); overflow: hidden; flex-shrink: 0;
+    background: white; box-shadow: var(--shadow-sm);
   }
   .multi-img-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .multi-img-thumb .remove-img {
     position: absolute; top: 3px; right: 3px; width: 18px; height: 18px;
     background: rgba(192,57,43,0.9); color: white; border: none; border-radius: 50%;
     cursor: pointer; font-size: 10px; display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.15s;
+  }
+  .multi-img-thumb:hover .remove-img { opacity: 1; }
+  .multi-img-thumb .img-order-label {
+    position: absolute; bottom: 3px; left: 3px;
+    background: rgba(30,21,48,0.65); color: white;
+    font-size: 9px; padding: 1px 5px; border-radius: 8px;
   }
   .add-more-img {
-    width: 72px; height: 72px; border-radius: 10px;
-    border: 1.5px dashed var(--lav-300); background: var(--lav-100);
+    width: 80px; height: 80px; border-radius: 10px;
+    border: 1.5px dashed var(--lav-300); background: white;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     cursor: pointer; font-size: 10px; color: var(--lav-600); gap: 4px;
     transition: all 0.18s; flex-shrink: 0;
   }
   .add-more-img:hover { background: var(--lav-200); border-color: var(--lav-400); }
-  .add-more-img span { font-size: 20px; line-height: 1; }
+  .add-more-img span { font-size: 22px; line-height: 1; }
+  .multi-img-count {
+    font-size: 10.5px; color: var(--text-soft); margin-top: 6px;
+  }
+  .multi-img-count strong { color: var(--lav-600); }
 
   /* ── SWATCHES ── */
   .swatches-input { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; padding: 9px 10px; border: 1px solid var(--border2); border-radius: 10px; min-height: 50px; background: var(--surface); }
@@ -244,6 +267,37 @@
   .tag-chip-remove:hover { color: var(--danger); }
   .tags-input input { border: none; outline: none; font-family: 'Outfit', sans-serif; font-size: 13px; background: transparent; color: var(--text); min-width: 120px; flex: 1; }
 
+  /* ── TOGGLE SWITCHES ── */
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border2);
+    background: var(--surface); transition: background 0.2s;
+  }
+  .toggle-row + .toggle-row { margin-top: 8px; }
+  .toggle-row.danger-row { border-color: rgba(192,57,43,0.2); background: #fdf2f0; }
+  .toggle-row.warn-row   { border-color: rgba(127,90,0,0.2); background: #fff8e6; }
+  .toggle-label { display: flex; flex-direction: column; gap: 2px; }
+  .toggle-label strong { font-size: 13px; color: var(--text); }
+  .toggle-label small { font-size: 10.5px; color: var(--text-soft); }
+  .toggle-switch { position: relative; display: inline-block; width: 38px; height: 22px; flex-shrink: 0; }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; inset: 0; cursor: pointer;
+    background: #ddd; border-radius: 22px; transition: background 0.2s;
+  }
+  .toggle-slider::before {
+    content: ''; position: absolute; width: 16px; height: 16px;
+    left: 3px; top: 3px; border-radius: 50%; background: white;
+    transition: transform 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  }
+  .toggle-switch input:checked + .toggle-slider { background: var(--lav-500); }
+  .toggle-switch input:checked + .toggle-slider::before { transform: translateX(16px); }
+  .toggle-switch.danger input:checked + .toggle-slider { background: var(--agotado); }
+
+  /* ── STATUS SECTION in form ── */
+  .status-section { border: 1px solid var(--border2); border-radius: 12px; padding: 14px; background: var(--bg); }
+  .status-section-title { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-soft); margin-bottom: 10px; font-weight: 500; }
+
   /* ── PRODUCT TABLE ── */
   .product-table { width: 100%; border-collapse: collapse; }
   .product-table th { font-size: 9.5px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--text-soft); padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
@@ -254,7 +308,17 @@
   .prod-thumb img { width: 42px; height: 42px; object-fit: cover; border-radius: 9px; display: block; }
   .cat-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; letter-spacing: 0.5px; background: var(--lav-100); color: var(--lav-600); border: 1px solid var(--border2); padding: 3px 10px; border-radius: 20px; }
   .price-label { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 500; color: var(--lav-500); }
-  .actions-cell { display: flex; gap: 5px; }
+  .actions-cell { display: flex; gap: 5px; flex-wrap: wrap; }
+
+  /* ── STATUS BADGES ── */
+  .status-pill {
+    font-size: 10px; letter-spacing: 0.5px; padding: 3px 10px;
+    border-radius: 20px; font-weight: 500; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .status-activo    { background: #e8f5e9; color: var(--success); border: 1px solid rgba(46,125,50,0.2); }
+  .status-agotado   { background: #fff8e6; color: var(--agotado); border: 1px solid rgba(127,90,0,0.2); }
+  .status-oculto    { background: #fdf2f0; color: var(--danger);  border: 1px solid rgba(192,57,43,0.2); }
 
   /* ── SEARCH ── */
   .search-wrap { position: relative; }
@@ -273,13 +337,13 @@
   /* ── PEDIDOS ── */
   .pedido-card {
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: 14px; overflow: hidden; margin-bottom: 12px;
+    border-radius: 14px; overflow: hidden; margin-bottom: 10px;
     box-shadow: var(--shadow-sm); transition: box-shadow 0.2s;
     animation: fadeUp 0.3s ease both;
   }
-  .pedido-card.nuevo { border-left: 3px solid #e55; }
-  .pedido-card.en-proceso { border-left: 3px solid var(--warning); }
-  .pedido-card.completado { border-left: 3px solid var(--success); opacity: 0.75; }
+  .pedido-card.nuevo       { border-left: 3px solid #e55; }
+  .pedido-card.en-proceso  { border-left: 3px solid var(--warning); }
+  .pedido-card.completado  { border-left: 3px solid var(--success); }
   .pedido-head {
     padding: 14px 18px; display: flex; align-items: center; gap: 14px;
     cursor: pointer; justify-content: space-between; flex-wrap: wrap;
@@ -300,18 +364,52 @@
     font-size: 9.5px; letter-spacing: 0.8px; text-transform: uppercase;
     padding: 4px 12px; border-radius: 20px; font-weight: 500; white-space: nowrap;
   }
-  .estado-nuevo { background: #fdecea; color: #c0392b; border: 1px solid rgba(192,57,43,0.2); }
-  .estado-en-proceso { background: #fef3e2; color: var(--warning); border: 1px solid rgba(230,126,34,0.2); }
-  .estado-completado { background: #e8f5e9; color: var(--success); border: 1px solid rgba(46,125,50,0.2); }
+  .estado-nuevo        { background: #fdecea; color: #c0392b; border: 1px solid rgba(192,57,43,0.2); }
+  .estado-en-proceso   { background: #fef3e2; color: var(--warning); border: 1px solid rgba(230,126,34,0.2); }
+  .estado-completado   { background: #e8f5e9; color: var(--success); border: 1px solid rgba(46,125,50,0.2); }
   .pedido-body { padding: 16px 18px; display: none; }
   .pedido-card.expanded .pedido-body { display: block; }
   .pedido-items { margin-bottom: 14px; }
   .pedido-item-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
   .pedido-item-row:last-child { border-bottom: none; }
   .pedido-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-  .pedido-filters { display: flex; gap: 7px; flex-wrap: wrap; }
-  .filter-tab { font-size: 11px; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border2); background: white; color: var(--text-mid); cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.18s; }
-  .filter-tab.active { background: var(--lav-600); border-color: var(--lav-600); color: white; }
+
+  /* ── PEDIDO FILTERS (mejorados) ── */
+  .pedidos-toolbar {
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px 18px; margin-bottom: 18px;
+    box-shadow: var(--shadow-sm);
+  }
+  .pedidos-toolbar-left { display: flex; gap: 7px; flex-wrap: wrap; flex: 1; align-items: center; }
+  .pedidos-toolbar-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .filter-tab { font-size: 11px; padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border2); background: white; color: var(--text-mid); cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.18s; font-weight: 400; }
+  .filter-tab:hover { background: var(--lav-100); color: var(--lav-600); border-color: var(--lav-300); }
+  .filter-tab.active { background: var(--lav-600); border-color: var(--lav-600); color: white; font-weight: 500; }
+  .filter-tab.active.f-nuevo      { background: #c0392b; border-color: #c0392b; }
+  .filter-tab.active.f-en-proceso { background: var(--warning); border-color: var(--warning); }
+  .filter-tab.active.f-completado { background: var(--success); border-color: var(--success); }
+
+  .sort-select {
+    padding: 6px 12px; border: 1px solid var(--border2); border-radius: 9px;
+    font-family: 'Outfit', sans-serif; font-size: 12px; color: var(--text-mid);
+    background: white; outline: none; cursor: pointer;
+  }
+  .sort-select:focus { border-color: var(--lav-400); }
+
+  /* ── PEDIDOS SEPARADOS POR SECCIÓN ── */
+  .pedidos-section-title {
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-soft); padding: 12px 2px 8px; margin-top: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pedidos-section-title::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* Completados atenuados */
+  .pedido-card.completado { opacity: 0.72; }
+  .pedido-card.completado:hover { opacity: 1; }
 
   /* ── NOTIFICATION TOAST ── */
   #notifBanner {
@@ -357,6 +455,7 @@
     .modal-overlay { align-items: flex-end; padding: 0; }
     .product-table { display: block; overflow-x: auto; }
     .page-header { flex-direction: column; align-items: flex-start; }
+    .pedidos-toolbar { flex-direction: column; align-items: flex-start; }
   }
 
   @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
@@ -458,6 +557,7 @@
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-num" id="statTotal">—</div><div class="stat-label">Productos Totales</div></div>
         <div class="stat-card"><div class="stat-num" id="statActivos">—</div><div class="stat-label">Activos</div></div>
+        <div class="stat-card"><div class="stat-num" id="statAgotados">—</div><div class="stat-label">Agotados</div></div>
         <div class="stat-card"><div class="stat-num" id="statCats">—</div><div class="stat-label">Categorías</div></div>
         <div class="stat-card"><div class="stat-num" id="statPedidos">—</div><div class="stat-label">Pedidos Nuevos</div></div>
       </div>
@@ -476,16 +576,33 @@
           <div class="page-title">Pedidos</div>
           <div class="page-subtitle" id="pedidosCount">Cargando...</div>
         </div>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <div class="pedido-filters" id="pedidoFilters">
-            <button class="filter-tab active" data-estado="todos" onclick="setPedidoFilter('todos',this)">Todos</button>
-            <button class="filter-tab" data-estado="nuevo" onclick="setPedidoFilter('nuevo',this)">🔴 Nuevos</button>
-            <button class="filter-tab" data-estado="en-proceso" onclick="setPedidoFilter('en-proceso',this)">🟡 En proceso</button>
-            <button class="filter-tab" data-estado="completado" onclick="setPedidoFilter('completado',this)">🟢 Completados</button>
-          </div>
-          <button class="btn btn-outline btn-sm" onclick="loadPedidos()">↻ Actualizar</button>
+        <button class="btn btn-outline btn-sm" onclick="loadPedidos()">↻ Actualizar</button>
+      </div>
+
+      <!-- Toolbar de filtros mejorada -->
+      <div class="pedidos-toolbar">
+        <div class="pedidos-toolbar-left">
+          <span style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-soft);font-weight:500;margin-right:4px">Estado</span>
+          <button class="filter-tab active f-todos" data-estado="todos" onclick="setPedidoFilter('todos',this)">Todos</button>
+          <button class="filter-tab f-nuevo" data-estado="nuevo" onclick="setPedidoFilter('nuevo',this)">🔴 Nuevos</button>
+          <button class="filter-tab f-en-proceso" data-estado="en-proceso" onclick="setPedidoFilter('en-proceso',this)">🟡 En proceso</button>
+          <button class="filter-tab f-completado" data-estado="completado" onclick="setPedidoFilter('completado',this)">🟢 Completados</button>
+        </div>
+        <div class="pedidos-toolbar-right">
+          <span style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-soft)">Ordenar</span>
+          <select class="sort-select" id="pedidoSort" onchange="renderPedidos()">
+            <option value="reciente">Más reciente</option>
+            <option value="antiguo">Más antiguo</option>
+            <option value="total-desc">Mayor total</option>
+            <option value="total-asc">Menor total</option>
+          </select>
+          <label style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-mid);cursor:pointer">
+            <input type="checkbox" id="agruparEstado" onchange="renderPedidos()" style="accent-color:var(--lav-600)">
+            Agrupar por estado
+          </label>
         </div>
       </div>
+
       <div id="pedidosWrap">
         <div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-text">Cargando...</div></div>
       </div>
@@ -505,6 +622,12 @@
           </div>
           <select id="prodFilterCat" onchange="filterProducts()" style="padding:8px 13px;border:1px solid var(--border2);border-radius:9px;font-family:'Outfit';font-size:12.5px;color:var(--text-mid);background:white;outline:none;cursor:pointer">
             <option value="">Todas las categorías</option>
+          </select>
+          <select id="prodFilterEstado" onchange="filterProducts()" style="padding:8px 13px;border:1px solid var(--border2);border-radius:9px;font-family:'Outfit';font-size:12.5px;color:var(--text-mid);background:white;outline:none;cursor:pointer">
+            <option value="">Todos los estados</option>
+            <option value="activo">✅ Activos</option>
+            <option value="agotado">⚠️ Agotados</option>
+            <option value="oculto">🚫 Ocultos</option>
           </select>
           <button class="btn btn-purple" onclick="openProductModal()">+ Nuevo Producto</button>
         </div>
@@ -547,6 +670,7 @@
     <div class="modal-body">
       <input type="hidden" id="prodId">
 
+      <!-- FOTO PRINCIPAL -->
       <div class="form-group">
         <label>Foto Principal</label>
         <div class="img-upload-area" id="imgUploadArea"
@@ -567,17 +691,26 @@
         <input type="hidden" id="prodImageUrl">
       </div>
 
+      <!-- GALERÍA / CARRUSEL -->
       <div class="form-group">
-        <label>Imágenes para carrusel <span style="color:var(--text-soft);font-weight:400">(máx. 6)</span></label>
-        <div class="multi-img-grid" id="extraImgsGrid"></div>
-        <div class="add-more-img" onclick="document.getElementById('extraImgInput').click()">
-          <span>+</span>
-          <small>Agregar</small>
+        <label>Galería de imágenes <span style="color:var(--text-soft);font-weight:400">(hasta 20 fotos)</span></label>
+        <div class="multi-img-section">
+          <div class="multi-img-section-title">Imágenes del carrusel — arrastra para reordenar</div>
+          <div class="multi-img-grid" id="extraImgsGrid"></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+            <div class="add-more-img" id="addMoreImgBtn" onclick="document.getElementById('extraImgInput').click()">
+              <span>+</span>
+              <small>Agregar</small>
+            </div>
+            <div class="multi-img-count" id="extraImgCount">
+              <strong>0</strong> / 20 fotos
+            </div>
+          </div>
+          <input type="file" id="extraImgInput" accept="image/*" multiple style="display:none" onchange="handleExtraImgs(event)">
+          <div class="upload-progress" id="extraUploadProgress"><div class="upload-bar" id="extraUploadBar"></div></div>
         </div>
-        <input type="file" id="extraImgInput" accept="image/*" multiple style="display:none" onchange="handleExtraImgs(event)">
-        <div class="upload-progress" id="extraUploadProgress"><div class="upload-bar" id="extraUploadBar"></div></div>
         <input type="hidden" id="prodImagenesExtra">
-        <small style="color:var(--text-soft);font-size:10.5px;margin-top:4px;display:block">Estas imágenes forman el carrusel del producto en el catálogo.</small>
+        <small style="color:var(--text-soft);font-size:10.5px;margin-top:6px;display:block">Estas fotos forman el carrusel en el catálogo. Puedes subir hasta 20 imágenes.</small>
       </div>
 
       <div class="form-row">
@@ -638,11 +771,35 @@
         <small style="color:var(--text-soft);font-size:10.5px;margin-top:4px;display:block">Ej: Larga duración, Waterproof, Vegano</small>
       </div>
 
+      <!-- ESTADO DEL PRODUCTO -->
       <div class="form-group">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-          <input type="checkbox" id="prodActivo" checked style="width:15px;height:15px;accent-color:var(--lav-600)">
-          Producto activo (visible en el catálogo)
-        </label>
+        <label>Estado del Producto</label>
+        <div class="status-section">
+          <div class="status-section-title">Visibilidad y disponibilidad</div>
+          <div class="toggle-row" id="toggleRowActivo">
+            <div class="toggle-label">
+              <strong>Producto activo</strong>
+              <small>Visible en el catálogo para los clientes</small>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="prodActivo" checked onchange="onActivoChange()">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row warn-row" id="toggleRowAgotado" style="margin-top:8px">
+            <div class="toggle-label">
+              <strong>⚠️ Marcar como agotado</strong>
+              <small>Sigue visible pero muestra "Agotado" y desactiva el botón de compra</small>
+            </div>
+            <label class="toggle-switch danger">
+              <input type="checkbox" id="prodAgotado" onchange="onAgotadoChange()">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div id="estadoPreview" style="margin-top:10px;font-size:11.5px;color:var(--text-soft);padding:8px 10px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
+            Estado actual: <strong id="estadoPreviewText" style="color:var(--success)">✅ Activo y visible</strong>
+          </div>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -704,12 +861,14 @@
 const SUPABASE_URL = 'https://titlxggqfdgwhsrpzlbb.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpdGx4Z2dxZmRnd2hzcnB6bGJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczODgwNzgsImV4cCI6MjA5Mjk2NDA3OH0.0aiE2JVGx-cQZpBG0TjGlPqPH7YzTG5LEP4pgPjDxHA';
 
-let sc = null; // supabase client
+let sc = null;
 let productos = [], categorias = [], pedidos = [];
 let currentImageFile = null, extraImageFiles = [], extraImageUrls = [];
 let swatches = [], tags = [];
 let pedidoFilter = 'todos';
 let pendingCount = 0;
+
+const MAX_EXTRA_IMGS = 20;
 
 /* ── INIT ── */
 function initSupabase() {
@@ -801,7 +960,8 @@ function closeNotif() { document.getElementById('notifBanner').classList.remove(
 /* ── DASHBOARD ── */
 function renderDashboard() {
   document.getElementById('statTotal').textContent   = productos.length;
-  document.getElementById('statActivos').textContent = productos.filter(p => p.activo).length;
+  document.getElementById('statActivos').textContent = productos.filter(p => p.activo && !p.agotado).length;
+  document.getElementById('statAgotados').textContent= productos.filter(p => p.agotado).length;
   document.getElementById('statCats').textContent    = categorias.length;
   document.getElementById('statPedidos').textContent = pedidos.filter(p => p.estado === 'nuevo').length;
 
@@ -817,9 +977,15 @@ function renderDashboard() {
     <td><strong>${p.nombre}</strong>${p.marca ? `<br><small style="color:var(--text-soft)">${p.marca}</small>` : ''}</td>
     <td><span class="cat-badge">${p.categorias?.emoji||''} ${p.categorias?.nombre||'—'}</span></td>
     <td><span class="price-label">${p.precio > 0 ? '$'+p.precio : 'Consultar'}</span></td>
-    <td><span style="font-size:10.5px;padding:3px 10px;border-radius:20px;background:${p.activo?'#e8f5e9':'#fdf2f0'};color:${p.activo?'var(--success)':'var(--danger)'}">${p.activo?'Activo':'Oculto'}</span></td>
+    <td>${productStatusPill(p)}</td>
   </tr>`).join('')}
   </tbody></table>`;
+}
+
+function productStatusPill(p) {
+  if (!p.activo) return `<span class="status-pill status-oculto">🚫 Oculto</span>`;
+  if (p.agotado) return `<span class="status-pill status-agotado">⚠️ Agotado</span>`;
+  return `<span class="status-pill status-activo">✅ Activo</span>`;
 }
 
 /* ── PEDIDOS ── */
@@ -830,31 +996,58 @@ function setPedidoFilter(estado, el) {
   renderPedidos();
 }
 
+function getSortedPedidos(list) {
+  const sort = document.getElementById('pedidoSort')?.value || 'reciente';
+  return [...list].sort((a, b) => {
+    if (sort === 'reciente')   return new Date(b.created_at) - new Date(a.created_at);
+    if (sort === 'antiguo')    return new Date(a.created_at) - new Date(b.created_at);
+    if (sort === 'total-desc') return (b.total||0) - (a.total||0);
+    if (sort === 'total-asc')  return (a.total||0) - (b.total||0);
+    return 0;
+  });
+}
+
 function renderPedidos() {
   const filtered = pedidoFilter === 'todos' ? pedidos : pedidos.filter(p => p.estado === pedidoFilter);
+  const agrupar  = document.getElementById('agruparEstado')?.checked;
   document.getElementById('pedidosCount').textContent = `${filtered.length} pedido${filtered.length !== 1 ? 's' : ''}`;
   const wrap = document.getElementById('pedidosWrap');
   if (!filtered.length) {
-    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">Sin pedidos aún</div><div class="empty-sub">Los pedidos aparecerán aquí en tiempo real cuando los clientes los envíen.</div></div>`;
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">Sin pedidos</div><div class="empty-sub">No hay pedidos en esta categoría.</div></div>`;
     return;
   }
-  wrap.innerHTML = filtered.map(p => buildPedidoCard(p)).join('');
+
+  if (agrupar && pedidoFilter === 'todos') {
+    // Agrupados: Nuevos → En proceso → Completados
+    const ORDER = ['nuevo', 'en-proceso', 'completado'];
+    const LABELS = { 'nuevo': '🔴 Nuevos', 'en-proceso': '🟡 En proceso', 'completado': '🟢 Completados' };
+    let html = '';
+    ORDER.forEach(estado => {
+      const grupo = getSortedPedidos(filtered.filter(p => p.estado === estado));
+      if (!grupo.length) return;
+      html += `<div class="pedidos-section-title">${LABELS[estado]} <span style="background:var(--lav-100);color:var(--lav-600);font-size:9px;padding:2px 8px;border-radius:20px;letter-spacing:0">${grupo.length}</span></div>`;
+      html += grupo.map(p => buildPedidoCard(p)).join('');
+    });
+    wrap.innerHTML = html;
+  } else {
+    wrap.innerHTML = getSortedPedidos(filtered).map(p => buildPedidoCard(p)).join('');
+  }
 }
 
 function buildPedidoCard(p) {
-  const date     = new Date(p.created_at);
-  const dateStr  = date.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }) + ' · ' + date.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
-  const estadoCls= (p.estado || 'nuevo').replace(/\s/g, '-');
-  const items    = Array.isArray(p.items) ? p.items : [];
-  const total    = p.total > 0 ? `$${parseFloat(p.total).toLocaleString('es-MX')}` : 'A consultar';
-  const initials = (p.cliente_nombre || 'C').charAt(0).toUpperCase();
+  const date    = new Date(p.created_at);
+  const dateStr = date.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }) + ' · ' + date.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+  const estadoCls = (p.estado || 'nuevo').replace(/\s/g, '-');
+  const items   = Array.isArray(p.items) ? p.items : [];
+  const total   = p.total > 0 ? `$${parseFloat(p.total).toLocaleString('es-MX')}` : 'A consultar';
+  const initials= (p.cliente_nombre || 'C').charAt(0).toUpperCase();
 
   const statusBtns = [];
-  if (p.estado !== 'nuevo')        statusBtns.push(`<button class="btn btn-danger btn-sm" onclick="updatePedidoEstado('${p.id}','nuevo')">↩ Marcar nuevo</button>`);
-  if (p.estado !== 'en-proceso')   statusBtns.push(`<button class="btn btn-warning btn-sm" onclick="updatePedidoEstado('${p.id}','en-proceso')">🟡 En proceso</button>`);
-  if (p.estado !== 'completado')   statusBtns.push(`<button class="btn btn-success btn-sm" onclick="updatePedidoEstado('${p.id}','completado')">✓ Completado</button>`);
+  if (p.estado !== 'nuevo')       statusBtns.push(`<button class="btn btn-danger btn-sm" onclick="updatePedidoEstado('${p.id}','nuevo')">↩ Nuevo</button>`);
+  if (p.estado !== 'en-proceso')  statusBtns.push(`<button class="btn btn-warning btn-sm" onclick="updatePedidoEstado('${p.id}','en-proceso')">🟡 En proceso</button>`);
+  if (p.estado !== 'completado')  statusBtns.push(`<button class="btn btn-success btn-sm" onclick="updatePedidoEstado('${p.id}','completado')">✓ Completado</button>`);
 
-  const waMsg = p.mensaje_wa ? `<a href="https://wa.me/?text=${encodeURIComponent(p.mensaje_wa)}" target="_blank" class="btn btn-outline btn-sm">💬 WA</a>` : '';
+  const waMsg = p.mensaje_wa ? `<a href="https://wa.me/?text=${encodeURIComponent(p.mensaje_wa)}" target="_blank" class="btn btn-outline btn-sm">💬 WhatsApp</a>` : '';
 
   return `<div class="pedido-card ${estadoCls}" id="pedido-${p.id}">
     <div class="pedido-head" onclick="togglePedido('${p.id}')">
@@ -868,6 +1061,7 @@ function buildPedidoCard(p) {
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
         <span class="estado-badge estado-${estadoCls}">${estadoLabel(p.estado)}</span>
         <span class="pedido-price">${total}</span>
+        <span style="color:var(--text-soft);font-size:12px">▾</span>
       </div>
     </div>
     <div class="pedido-body">
@@ -877,6 +1071,7 @@ function buildPedidoCard(p) {
           <span style="color:var(--text-soft)">x${it.qty || 1} — ${it.precio > 0 ? '$'+parseFloat(it.precio).toLocaleString('es-MX') : 'Consultar'}</span>
         </div>`).join('')}
       </div>
+      ${p.notas ? `<div style="background:var(--lav-100);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--text-mid);margin-bottom:12px">📝 ${p.notas}</div>` : ''}
       <div class="pedido-actions">${statusBtns.join('')}${waMsg}</div>
     </div>
   </div>`;
@@ -911,42 +1106,85 @@ function renderProductos() {
 }
 
 function filterProducts() {
-  const q   = document.getElementById('prodSearch').value.toLowerCase();
-  const cat = document.getElementById('prodFilterCat').value;
+  const q      = document.getElementById('prodSearch').value.toLowerCase();
+  const cat    = document.getElementById('prodFilterCat').value;
+  const estado = document.getElementById('prodFilterEstado').value;
   let filtered = productos.filter(p => {
     const matchQ   = !q || p.nombre.toLowerCase().includes(q) || (p.marca||'').toLowerCase().includes(q);
     const matchCat = !cat || p.categoria_id === cat;
-    return matchQ && matchCat;
+    const matchEst = !estado
+      || (estado === 'activo'  &&  p.activo && !p.agotado)
+      || (estado === 'agotado' && p.agotado)
+      || (estado === 'oculto'  && !p.activo);
+    return matchQ && matchCat && matchEst;
   });
   const wrap = document.getElementById('productTableWrap');
   if (!filtered.length) {
     wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">○</div><div class="empty-text">Sin resultados</div></div>`; return;
   }
   wrap.innerHTML = `<table class="product-table">
-    <thead><tr><th>Foto</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Fotos</th><th>Estado</th><th>Acciones</th></tr></thead>
+    <thead><tr><th>Foto</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Galería</th><th>Estado</th><th>Acciones</th></tr></thead>
     <tbody>${filtered.map(p => {
-      const imgCount = (p.imagenes_extra && Array.isArray(p.imagenes_extra)) ? p.imagenes_extra.length : (p.imagen_url ? 1 : 0);
+      const extraArr = (p.imagenes_extra && Array.isArray(p.imagenes_extra)) ? p.imagenes_extra : [];
+      const imgCount = extraArr.length + (p.imagen_url ? 1 : 0);
       return `<tr>
         <td><div class="prod-thumb">${p.imagen_url ? `<img src="${p.imagen_url}" alt="">` : p.emoji||'✦'}</div></td>
         <td><strong style="color:var(--lav-700)">${p.nombre}</strong>${p.marca?`<br><small style="color:var(--text-soft)">${p.marca}</small>`:''}</td>
         <td><span class="cat-badge">${p.categorias?.emoji||''} ${p.categorias?.nombre||'—'}</span></td>
         <td><span class="price-label">${p.precio>0?'$'+parseFloat(p.precio).toLocaleString('es-MX'):'Consultar'}</span></td>
         <td><span style="font-size:11px;color:var(--text-soft)">📷 ${imgCount}</span></td>
-        <td><span style="font-size:10.5px;padding:3px 10px;border-radius:20px;background:${p.activo?'#e8f5e9':'#fdf2f0'};color:${p.activo?'var(--success)':'var(--danger)'}">${p.activo?'Activo':'Oculto'}</span></td>
+        <td>${productStatusPill(p)}</td>
         <td><div class="actions-cell">
           <button class="btn btn-outline btn-sm" onclick="editProduct('${p.id}')">✏ Editar</button>
+          <button class="btn ${p.agotado ? 'btn-success' : 'btn-agotado'} btn-sm" onclick="toggleAgotado('${p.id}',${p.agotado})">${p.agotado ? '✓ Disponible' : '⚠ Agotado'}</button>
           <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}','${p.nombre.replace(/'/g,"\\'")}')">✕</button>
         </div></td>
       </tr>`;
     }).join('')}</tbody></table>`;
 }
 
+/* ── TOGGLE RÁPIDO AGOTADO ── */
+async function toggleAgotado(id, estaAgotado) {
+  const newVal = !estaAgotado;
+  const { error } = await sc.from('productos').update({ agotado: newVal }).eq('id', id);
+  if (error) return toast('Error: ' + error.message, 'error');
+  const idx = productos.findIndex(p => p.id === id);
+  if (idx > -1) productos[idx].agotado = newVal;
+  filterProducts(); renderDashboard();
+  toast(newVal ? 'Marcado como agotado' : 'Marcado como disponible', 'success');
+}
+
+/* ── ESTADO PREVIEW EN MODAL ── */
+function onActivoChange() {
+  const activo  = document.getElementById('prodActivo').checked;
+  const agotado = document.getElementById('prodAgotado').checked;
+  const rowAgotado = document.getElementById('toggleRowAgotado');
+  if (!activo) {
+    rowAgotado.style.opacity = '0.4';
+    rowAgotado.style.pointerEvents = 'none';
+    document.getElementById('prodAgotado').checked = false;
+  } else {
+    rowAgotado.style.opacity = '1';
+    rowAgotado.style.pointerEvents = 'auto';
+  }
+  updateEstadoPreview();
+}
+function onAgotadoChange() { updateEstadoPreview(); }
+function updateEstadoPreview() {
+  const activo  = document.getElementById('prodActivo').checked;
+  const agotado = document.getElementById('prodAgotado').checked;
+  const el = document.getElementById('estadoPreviewText');
+  if (!activo)       { el.textContent = '🚫 Oculto — no aparece en el catálogo'; el.style.color = 'var(--danger)'; }
+  else if (agotado)  { el.textContent = '⚠️ Agotado — visible pero sin botón de compra'; el.style.color = 'var(--agotado)'; }
+  else               { el.textContent = '✅ Activo y visible'; el.style.color = 'var(--success)'; }
+}
+
 /* ── PRODUCT MODAL ── */
 function openProductModal(prod = null) {
-  swatches        = prod?.tonos || [];
-  tags            = prod?.tags  || [];
-  extraImageUrls  = (prod?.imagenes_extra && Array.isArray(prod.imagenes_extra)) ? [...prod.imagenes_extra] : [];
-  extraImageFiles = [];
+  swatches       = prod?.tonos || [];
+  tags           = prod?.tags  || [];
+  extraImageUrls = (prod?.imagenes_extra && Array.isArray(prod.imagenes_extra)) ? [...prod.imagenes_extra] : [];
+  extraImageFiles= [];
   document.getElementById('productModalTitle').textContent = prod ? 'Editar Producto' : 'Nuevo Producto';
   document.getElementById('prodId').value        = prod?.id || '';
   document.getElementById('prodNombre').value    = prod?.nombre || '';
@@ -956,6 +1194,7 @@ function openProductModal(prod = null) {
   document.getElementById('prodPrecio').value    = prod?.precio || 0;
   document.getElementById('prodPrecioAnt').value = prod?.precio_anterior || 0;
   document.getElementById('prodActivo').checked  = prod ? prod.activo : true;
+  document.getElementById('prodAgotado').checked = prod?.agotado || false;
   document.getElementById('prodImageUrl').value  = prod?.imagen_url || '';
   const catSel = document.getElementById('prodCat');
   catSel.innerHTML = '<option value="">Seleccionar...</option>' + categorias.map(c => `<option value="${c.id}" ${prod?.categoria_id === c.id ? 'selected' : ''}>${c.emoji} ${c.nombre}</option>`).join('');
@@ -968,6 +1207,7 @@ function openProductModal(prod = null) {
     document.getElementById('imgUploadArea').style.display = 'block';
   }
   currentImageFile = null;
+  onActivoChange(); // sync toggle state
   renderExtraImgs(); renderSwatches(); renderTags();
   openModal('productModal');
 }
@@ -985,12 +1225,14 @@ async function saveProduct() {
     let imageUrl = document.getElementById('prodImageUrl').value;
     if (currentImageFile) imageUrl = await uploadImage(currentImageFile, 'uploadProgress', 'uploadBar') || imageUrl;
 
-    // Upload extra images
-    const uploadedExtras = [...extraImageUrls]; // already uploaded ones
+    const uploadedExtras = [...extraImageUrls];
     for (const file of extraImageFiles) {
       const url = await uploadImage(file, 'extraUploadProgress', 'extraUploadBar');
       if (url) uploadedExtras.push(url);
     }
+
+    const activo  = document.getElementById('prodActivo').checked;
+    const agotado = activo ? document.getElementById('prodAgotado').checked : false;
 
     const payload = {
       nombre, marca: document.getElementById('prodMarca').value.trim(),
@@ -1000,8 +1242,8 @@ async function saveProduct() {
       precio_anterior: parseFloat(document.getElementById('prodPrecioAnt').value) || 0,
       imagen_url: imageUrl || uploadedExtras[0] || null,
       imagenes_extra: uploadedExtras.length ? uploadedExtras : null,
-      tonos: swatches, tags: tags,
-      activo: document.getElementById('prodActivo').checked
+      tonos: swatches, tags,
+      activo, agotado
     };
     const pid = document.getElementById('prodId').value;
     let error;
@@ -1073,31 +1315,55 @@ function removeImage() {
   document.getElementById('imgFileInput').value = '';
 }
 
-/* ── EXTRA IMAGES ── */
+/* ── EXTRA IMAGES (hasta 20) ── */
 function handleExtraImgs(e) {
   const files = Array.from(e.target.files);
-  const total = extraImageUrls.length + extraImageFiles.length + files.length;
-  if (total > 6) { toast('Máximo 6 imágenes en carrusel', 'error'); return; }
-  files.forEach(f => { if (f.size <= 5 * 1024 * 1024) extraImageFiles.push(f); });
+  const current = extraImageUrls.length + extraImageFiles.length;
+  const available = MAX_EXTRA_IMGS - current;
+  if (available <= 0) { toast(`Ya tienes ${MAX_EXTRA_IMGS} imágenes (máximo)`, 'error'); return; }
+  const toAdd = files.slice(0, available);
+  if (files.length > available) toast(`Solo se agregarán ${available} imagen(es) — límite de ${MAX_EXTRA_IMGS}`, 'default');
+  toAdd.forEach(f => { if (f.size <= 5 * 1024 * 1024) extraImageFiles.push(f); else toast(`"${f.name}" supera 5MB`, 'error'); });
   renderExtraImgs();
   e.target.value = '';
 }
+
 function removeExtraImg(type, idx) {
   if (type === 'url') extraImageUrls.splice(idx, 1);
   else extraImageFiles.splice(idx, 1);
   renderExtraImgs();
 }
+
 function renderExtraImgs() {
   const grid = document.getElementById('extraImgsGrid');
+  const total = extraImageUrls.length + extraImageFiles.length;
   let html = '';
   extraImageUrls.forEach((url, i) => {
-    html += `<div class="multi-img-thumb"><img src="${url}" alt=""><button class="remove-img" onclick="removeExtraImg('url',${i})">✕</button></div>`;
+    html += `<div class="multi-img-thumb">
+      <img src="${url}" alt="">
+      <button class="remove-img" onclick="removeExtraImg('url',${i})">✕</button>
+      <span class="img-order-label">${i+1}</span>
+    </div>`;
   });
   extraImageFiles.forEach((file, i) => {
     const objUrl = URL.createObjectURL(file);
-    html += `<div class="multi-img-thumb"><img src="${objUrl}" alt=""><button class="remove-img" onclick="removeExtraImg('file',${i})">✕</button></div>`;
+    html += `<div class="multi-img-thumb">
+      <img src="${objUrl}" alt="">
+      <button class="remove-img" onclick="removeExtraImg('file',${i})">✕</button>
+      <span class="img-order-label">${extraImageUrls.length + i + 1}</span>
+    </div>`;
   });
   grid.innerHTML = html;
+
+  // Actualizar contador y botón
+  const addBtn = document.getElementById('addMoreImgBtn');
+  const countEl = document.getElementById('extraImgCount');
+  countEl.innerHTML = `<strong>${total}</strong> / ${MAX_EXTRA_IMGS} fotos`;
+  if (total >= MAX_EXTRA_IMGS) {
+    addBtn.style.display = 'none';
+  } else {
+    addBtn.style.display = 'flex';
+  }
 }
 
 /* ── SWATCHES ── */
@@ -1161,6 +1427,7 @@ function openCatModal(cat = null) {
 }
 function editCat(id) { const c = categorias.find(x => x.id === id); if (c) openCatModal(c); }
 function slugify(str) { return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,''); }
+
 async function saveCat() {
   const nombre = document.getElementById('catNombre').value.trim();
   const slug   = document.getElementById('catSlug').value.trim();
@@ -1216,3 +1483,4 @@ function toast(msg, type = 'default') {
 })();
 </script>
 </body>
+</html>
