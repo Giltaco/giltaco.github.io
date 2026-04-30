@@ -1164,7 +1164,24 @@ function doSearch(q) {
   rw.appendChild(grid); rw.classList.add('active');
 }
 
-
+/* ── FECHA ESPECIAL ── */
+function detectarFechaEspecial() {
+  const hoy = new Date();
+  const mm = String(hoy.getMonth()+1).padStart(2,'0');
+  const dd = String(hoy.getDate()).padStart(2,'0');
+  const s = `${mm}-${dd}`;
+  const activa = FECHAS_ESPECIALES.find(f=>{
+    if(f.desde<=f.hasta) return s>=f.desde&&s<=f.hasta;
+    return s>=f.desde||s<=f.hasta;
+  });
+  if (activa) {
+    document.getElementById('specialTitle').textContent = activa.nombre;
+    document.getElementById('specialDesc').textContent  = activa.descripcion;
+    document.getElementById('specialInner').setAttribute('data-emoji', activa.emoji);
+    document.getElementById('specialBtn').href = waLink(activa.mensaje);
+    document.getElementById('special-banner').classList.add('visible');
+  }
+}
 
 init();
 </script>
