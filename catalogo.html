@@ -117,17 +117,6 @@ header {
 .cart-badge { position: absolute; top: -5px; right: -5px; background: #e55; color: white; width: 18px; height: 18px; border-radius: 50%; font-size: 10px; font-weight: 600; display: none; align-items: center; justify-content: center; font-family: 'Outfit', sans-serif; border: 2px solid var(--bg); }
 .cart-badge.visible { display: flex; }
 
-/* ── SPECIAL BANNER ── */
-#special-banner { display: none; position: relative; z-index: 1; padding: 14px 2rem; }
-#special-banner.visible { display: block; }
-.special-inner { background: var(--lav-700); border-radius: var(--radius-lg); padding: 20px 28px; display: flex; align-items: center; gap: 22px; max-width: 1100px; margin: 0 auto; flex-wrap: wrap; justify-content: center; position: relative; overflow: hidden; }
-.special-inner::before { content: attr(data-emoji); position: absolute; font-size: 110px; opacity: 0.09; right: 18px; top: -18px; line-height: 1; pointer-events: none; }
-.special-text { position: relative; z-index: 1; }
-.special-text h3 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 300; font-style: italic; color: white; margin-bottom: 4px; }
-.special-text p { font-size: 12.5px; color: rgba(255,255,255,0.75); }
-.special-btn { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.25); font-family: 'Outfit', sans-serif; font-size: 11.5px; font-weight: 500; letter-spacing: 0.8px; text-transform: uppercase; padding: 9px 20px; border-radius: 30px; cursor: pointer; text-decoration: none; transition: all 0.22s; white-space: nowrap; backdrop-filter: blur(4px); }
-.special-btn:hover { background: rgba(255,255,255,0.25); transform: translateY(-1px); }
-
 /* ── HERO ── */
 .hero { position: relative; z-index: 1; text-align: center; padding: 72px 2rem 48px; max-width: 680px; margin: 0 auto; }
 .hero-eyebrow { display: inline-flex; align-items: center; gap: 12px; font-size: 9.5px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; animation: fadeUp 0.55s ease both; }
@@ -163,7 +152,10 @@ header {
   cursor: pointer;
 }
 .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--lav-300); }
-.card.agotado { opacity: 0.72; }
+
+/* Agotado: overlay sobre imagen pero card sigue siendo clickeable */
+.card.agotado { opacity: 0.78; }
+.card.agotado:hover { opacity: 1; transform: translateY(-2px); }
 .card.agotado .card-img-wrap::after {
   content: 'AGOTADO';
   position: absolute; inset: 0; z-index: 3;
@@ -215,7 +207,11 @@ header {
 .card-brand { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-xsoft); }
 .card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
 .card-price { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--lav-600); }
-.card-price.agotado-label { font-family: 'Outfit', sans-serif; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: #c0392b; background: #fdecea; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+.card-price.agotado-label {
+  font-family: 'Outfit', sans-serif; font-size: 11px; letter-spacing: 1px;
+  text-transform: uppercase; color: #c0392b; background: #fdecea;
+  padding: 3px 10px; border-radius: 20px; font-weight: 500;
+}
 .card-ver-btn {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 10.5px; letter-spacing: 0.5px; text-transform: uppercase;
@@ -422,10 +418,10 @@ header {
 .pd-price-consult { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; color: var(--text-soft); }
 .pd-agotado-banner {
   background: #fdecea; border: 1px solid rgba(192,57,43,0.2); border-radius: 10px;
-  padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; display: flex; align-items: flex-start; gap: 10px;
 }
 .pd-agotado-banner span { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: #c0392b; font-weight: 600; }
-.pd-agotado-banner p { font-size: 12px; color: #a93226; margin-top: 2px; }
+.pd-agotado-banner p { font-size: 12px; color: #a93226; margin-top: 3px; }
 
 .pd-divider { height: 1px; background: var(--border); }
 
@@ -529,13 +525,6 @@ const TIENDA = {
   whatsapp:    '528771091228',
   mensajeBase: 'Hola! Vi el catálogo de Firefly Cosmetics y me interesa: '
 };
-
-const FECHAS_ESPECIALES = [
-  { nombre: '💝 San Valentín', emoji: '💝', descripcion: 'Combos especiales para regalar con amor y estilo.', desde: '02-07', hasta: '02-14', mensaje: 'Hola! Me interesa el combo de San Valentín de Firefly Cosmetics 💝' },
-  { nombre: '🌸 Día de las Madres', emoji: '🌸', descripcion: 'Celebra a mamá con el regalo perfecto.', desde: '04-28', hasta: '05-10', mensaje: 'Hola! Quiero los combos del Día de las Madres de Firefly Cosmetics 🌸' },
-  { nombre: '🎄 Navidad', emoji: '🎄', descripcion: 'Sets especiales con envoltorio navideño.', desde: '12-01', hasta: '12-24', mensaje: 'Hola! Me interesan los combos navideños de Firefly Cosmetics 🎄' },
-  { nombre: '🎆 Año Nuevo', emoji: '🎆', descripcion: 'Empieza el año brillando. Sets especiales.', desde: '12-26', hasta: '01-01', mensaje: 'Hola! Quiero info sobre los combos de Año Nuevo de Firefly Cosmetics 🎆' }
-];
 </script>
 
 <!-- LOADING -->
@@ -590,20 +579,6 @@ const FECHAS_ESPECIALES = [
     </button>
   </div>
 </header>
-
-<!-- SPECIAL BANNER -->
-<div id="special-banner">
-  <div class="special-inner" id="specialInner">
-    <div class="special-text">
-      <h3 id="specialTitle"></h3>
-      <p id="specialDesc"></p>
-    </div>
-    <a id="specialBtn" class="special-btn" target="_blank">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.053 22l4.948-1.303A9.935 9.935 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z" fill-rule="evenodd"/></svg>
-      Ver combo
-    </a>
-  </div>
-</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -725,54 +700,47 @@ function svgWA(color='white') {
 }
 
 /* ─────────────────────────────────────────
-   INIT — carga resiliente con fallbacks
+   INIT
 ───────────────────────────────────────── */
 async function init() {
   document.getElementById('waFloat').href     = waLink(TIENDA.mensajeBase);
   document.getElementById('bannerWaBtn').href = waLink(TIENDA.mensajeBase);
-  detectarFechaEspecial();
 
   try {
     sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    /* ── Categorías con fallback de orden ── */
+    /* ── Categorías ── */
     let cats = null;
-    const catsOrdenado = await sb.from('categorias').select('*').order('orden');
-    if (!catsOrdenado.error) {
-      cats = catsOrdenado.data;
+    const catsRes = await sb.from('categorias').select('*').order('orden');
+    if (!catsRes.error) {
+      cats = catsRes.data;
     } else {
-      // Si la columna 'orden' no existe, intenta sin orden
-      const catsSinOrden = await sb.from('categorias').select('*');
-      if (catsSinOrden.error) throw catsSinOrden.error;
-      cats = catsSinOrden.data;
+      const catsFallback = await sb.from('categorias').select('*');
+      if (catsFallback.error) throw catsFallback.error;
+      cats = catsFallback.data;
     }
 
-    /* ── Productos con fallback ── */
-    let prods = null;
-    const prodsOrdenado = await sb.from('productos')
+    /* ── Productos: solo activos (activo = true) ── */
+    const prodsRes = await sb
+      .from('productos')
       .select('*, categorias(id,nombre,emoji,slug)')
-      .order('orden');
-    if (!prodsOrdenado.error) {
-      prods = prodsOrdenado.data;
+      .eq('activo', true)
+      .order('created_at', { ascending: false });
+
+    let prods = null;
+    if (!prodsRes.error) {
+      prods = prodsRes.data;
     } else {
-      // Fallback: sin orden específico
-      const prodsSinOrden = await sb.from('productos')
-        .select('*, categorias(id,nombre,emoji,slug)');
-      if (!prodsSinOrden.error) {
-        prods = prodsSinOrden.data;
-      } else {
-        // Último fallback: sin join de categorías
-        const prodsSimple = await sb.from('productos').select('*');
-        if (prodsSimple.error) throw prodsSimple.error;
-        prods = prodsSimple.data;
-      }
+      // Fallback sin join de categorías
+      const prodsFallback = await sb.from('productos').select('*').eq('activo', true);
+      if (prodsFallback.error) throw prodsFallback.error;
+      prods = prodsFallback.data;
     }
 
     CATEGORIAS = cats  || [];
     PRODUCTOS  = prods || [];
 
-    if (!CATEGORIAS.length && !PRODUCTOS.length) {
-      // Datos vacíos pero conexión OK — mostrar estado vacío
+    if (!PRODUCTOS.length) {
       document.getElementById('catalogoRoot').innerHTML = `
         <div class="catalog-empty-state">
           <div class="empty-icon">✦</div>
@@ -791,7 +759,6 @@ async function init() {
       <a href="javascript:location.reload()">Intentar de nuevo</a>`;
   }
 
-  /* Ocultar loading siempre */
   const ls = document.getElementById('loadingScreen');
   ls.style.opacity = '0';
   setTimeout(() => ls.style.display = 'none', 500);
@@ -804,8 +771,9 @@ function buildUI() {
   const root = document.getElementById('catalogoRoot');
 
   CATEGORIAS.forEach(cat => {
-    const hasProds = PRODUCTOS.some(p => p.categoria_id === cat.id);
-    if (!hasProds) return;
+    // Solo categorías que tengan al menos un producto activo
+    const catProds = PRODUCTOS.filter(p => p.categoria_id === cat.id);
+    if (!catProds.length) return;
 
     const nb = document.createElement('button');
     nb.textContent = (cat.emoji||'') + ' ' + cat.nombre;
@@ -820,21 +788,20 @@ function buildUI() {
     pill.onclick     = () => filtrar(cat.id, pill);
     fb.appendChild(pill);
 
-    const pCount  = PRODUCTOS.filter(p => p.categoria_id === cat.id).length;
     const heading = document.createElement('div');
     heading.className = 'section-heading';
     heading.setAttribute('data-section', cat.id);
-    heading.innerHTML = `<h2>${cat.emoji||''} ${cat.nombre}</h2><span class="section-count">${pCount} producto${pCount!==1?'s':''}</span>`;
+    heading.innerHTML = `<h2>${cat.emoji||''} ${cat.nombre}</h2><span class="section-count">${catProds.length} producto${catProds.length!==1?'s':''}</span>`;
     root.appendChild(heading);
 
     const grid = document.createElement('div');
     grid.className = 'catalog-section';
     grid.setAttribute('data-grid', cat.id);
-    PRODUCTOS.filter(p => p.categoria_id === cat.id).forEach((p,i) => grid.appendChild(buildCard(p,i)));
+    catProds.forEach((p, i) => grid.appendChild(buildCard(p, i)));
     root.appendChild(grid);
   });
 
-  // Si hay productos pero sin categorías, mostrarlos todos en una sección
+  // Si no hay categorías pero sí productos, mostrar todo en una sección
   if (!CATEGORIAS.length && PRODUCTOS.length) {
     const heading = document.createElement('div');
     heading.className = 'section-heading';
@@ -842,16 +809,19 @@ function buildUI() {
     root.appendChild(heading);
     const grid = document.createElement('div');
     grid.className = 'catalog-section';
-    PRODUCTOS.forEach((p,i) => grid.appendChild(buildCard(p,i)));
+    PRODUCTOS.forEach((p, i) => grid.appendChild(buildCard(p, i)));
     root.appendChild(grid);
   }
 }
 
-/* ── CARD ── */
+/* ── CARD ──
+   activo=false → filtrado en la query (no llega aquí)
+   agotado=true → se muestra con overlay "AGOTADO", sin poder pedir
+*/
 function buildCard(p, idx) {
-  const cat    = CATEGORIAS.find(c => c.id === p.categoria_id);
-  const card   = document.createElement('div');
-  const isAgotado = !p.activo;
+  const cat       = CATEGORIAS.find(c => c.id === p.categoria_id);
+  const card      = document.createElement('div');
+  const isAgotado = p.agotado === true;
 
   card.className = 'card' + (isAgotado ? ' agotado' : '');
   card.setAttribute('data-cat', p.categoria_id || '');
@@ -873,9 +843,14 @@ function buildCard(p, idx) {
   }
 
   const precio    = parseFloat(p.precio) || 0;
-  const priceHtml = isAgotado
-    ? `<span class="card-price agotado-label">Agotado</span>`
-    : precio > 0 ? `<span class="card-price">$${precio.toLocaleString('es-MX')}</span>` : `<span class="card-price" style="font-size:14px;font-style:italic;color:var(--text-soft)">Consultar</span>`;
+  let priceHtml;
+  if (isAgotado) {
+    priceHtml = `<span class="card-price agotado-label">⚠ Agotado</span>`;
+  } else if (precio > 0) {
+    priceHtml = `<span class="card-price">$${precio.toLocaleString('es-MX')}</span>`;
+  } else {
+    priceHtml = `<span class="card-price" style="font-size:14px;font-style:italic;color:var(--text-soft)">Consultar</span>`;
+  }
 
   card.innerHTML = `
     <div class="card-img-wrap">
@@ -967,16 +942,18 @@ function renderPDInfo(p) {
   const cat       = CATEGORIAS.find(c => c.id === p.categoria_id);
   const precio    = parseFloat(p.precio) || 0;
   const precioAnt = parseFloat(p.precio_anterior) || 0;
-  const isAgotado = !p.activo;
+  // agotado=true → no se puede pedir | activo=false → no llega aquí (filtrado en query)
+  const isAgotado = p.agotado === true;
 
   let priceHtml;
   if (isAgotado) {
-    priceHtml = `<div class="pd-agotado-banner">
-      <div>
-        <span>🚫 Producto Agotado</span>
-        <p>Escríbenos para avisarte cuando regrese.</p>
-      </div>
-    </div>`;
+    priceHtml = `
+      <div class="pd-agotado-banner">
+        <div>
+          <span>⚠ Producto Agotado</span>
+          <p>Este producto no está disponible por el momento. Escríbenos para avisarte cuando regrese.</p>
+        </div>
+      </div>`;
   } else if (precio > 0) {
     priceHtml = `<div class="pd-price-block">
       <span class="pd-price">$${precio.toLocaleString('es-MX')}</span>
@@ -991,7 +968,7 @@ function renderPDInfo(p) {
     ? `<div class="pd-tags">${p.tags.map(t=>`<span class="pd-tag">${t}</span>`).join('')}</div>` : '';
 
   let tonosHtml = '';
-  if (p.tonos && p.tonos.length) {
+  if (p.tonos && p.tonos.length && !isAgotado) {
     tonosHtml = `
       <div>
         <div class="pd-tonos-label">Tonos disponibles</div>
@@ -1003,12 +980,25 @@ function renderPDInfo(p) {
           ).join('')}
         </div>
       </div>`;
+  } else if (p.tonos && p.tonos.length && isAgotado) {
+    // Mostrar tonos de solo lectura si está agotado
+    tonosHtml = `
+      <div>
+        <div class="pd-tonos-label">Tonos disponibles</div>
+        <div class="pd-swatches" style="opacity:0.45;pointer-events:none">
+          ${p.tonos.map(color =>
+            `<div class="pd-swatch" style="background:${color}" title="${color}"></div>`
+          ).join('')}
+        </div>
+      </div>`;
   }
 
   const msgWA = `${TIENDA.mensajeBase}*${p.nombre}*${p.marca?' ('+p.marca+')':''}.`;
+  const msgWaAviso = `Hola! Me interesa el producto *${p.nombre}* y quiero que me avisen cuando esté disponible.`;
 
+  // Acciones: si agotado → solo botón de aviso por WA; si disponible → carrito + WA
   const actionsHtml = isAgotado
-    ? `<a class="pd-btn-wa" href="${waLink('Hola! Me interesa el producto *'+p.nombre+'* y quiero que me avisen cuando esté disponible.')}" target="_blank">
+    ? `<a class="pd-btn-wa" href="${waLink(msgWaAviso)}" target="_blank">
         ${svgWA('var(--lav-600)')} Avisarme cuando regrese
       </a>`
     : `<button class="pd-btn-cart" id="pdCartBtn-${p.id}" onclick="addToCartFromPD('${p.id}')">
@@ -1045,7 +1035,7 @@ function pdSelectTono(pid, color, el) {
 
 function addToCartFromPD(pid) {
   const prod = PRODUCTOS.find(p => p.id === pid);
-  if (!prod) return;
+  if (!prod || prod.agotado) return; // doble guarda
   const tono = tonosSeleccionados['pd_' + pid] || null;
   const key  = pid + (tono||'');
   const exist = cart.find(i => i.key === key);
@@ -1185,6 +1175,7 @@ function doSearch(q) {
   root.style.display='none';
   document.querySelectorAll('.section-heading').forEach(el=>el.style.display='none');
   document.querySelectorAll('.filter-pill, .header-nav button').forEach(b=>b.classList.remove('active'));
+  // Busca solo entre los activos (PRODUCTOS ya filtrado desde query)
   const matches = PRODUCTOS.filter(p=>[p.nombre,p.marca,p.descripcion,...(p.tags||[])].join(' ').toLowerCase().includes(q));
   if (!matches.length) {
     rw.innerHTML=`<div class="search-heading">Resultados para "${q}"</div><div class="no-results"><div class="no-results-icon">◎</div><p>Sin resultados para "${q}"</p><small>Intenta con otras palabras.</small></div>`;
@@ -1195,25 +1186,6 @@ function doSearch(q) {
   matches.forEach((p,i)=>grid.appendChild(buildCard(p,i)));
   rw.innerHTML=`<div class="search-heading">◎ "${q}" — ${matches.length} resultado${matches.length!==1?'s':''}</div>`;
   rw.appendChild(grid); rw.classList.add('active');
-}
-
-/* ── FECHA ESPECIAL ── */
-function detectarFechaEspecial() {
-  const hoy = new Date();
-  const mm = String(hoy.getMonth()+1).padStart(2,'0');
-  const dd = String(hoy.getDate()).padStart(2,'0');
-  const s = `${mm}-${dd}`;
-  const activa = FECHAS_ESPECIALES.find(f=>{
-    if(f.desde<=f.hasta) return s>=f.desde&&s<=f.hasta;
-    return s>=f.desde||s<=f.hasta;
-  });
-  if (activa) {
-    document.getElementById('specialTitle').textContent = activa.nombre;
-    document.getElementById('specialDesc').textContent  = activa.descripcion;
-    document.getElementById('specialInner').setAttribute('data-emoji', activa.emoji);
-    document.getElementById('specialBtn').href = waLink(activa.mensaje);
-    document.getElementById('special-banner').classList.add('visible');
-  }
 }
 
 init();
