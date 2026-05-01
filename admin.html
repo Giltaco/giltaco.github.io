@@ -249,6 +249,61 @@
   }
   .multi-img-count strong { color: var(--lav-600); }
 
+  /* ── VARIANT ROWS ── */
+.variante-row {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px; border:1px solid var(--border2);
+  border-radius:10px; background:var(--surface);
+}
+.var-img-thumb {
+  width:52px; height:52px; border-radius:8px;
+  border:1.5px dashed var(--lav-300); background:var(--lav-100);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; overflow:hidden; flex-shrink:0; font-size:20px;
+}
+.var-img-thumb img { width:52px; height:52px; object-fit:cover; display:block; }
+.var-fields { flex:1; display:flex; flex-direction:column; gap:6px; }
+.var-fields input {
+  width:100%; padding:7px 10px; border:1px solid var(--border2);
+  border-radius:8px; font-family:'Outfit',sans-serif; font-size:13px;
+  color:var(--text); background:white; outline:none;
+}
+.var-fields input:focus { border-color:var(--lav-400); box-shadow:var(--glow); }
+.var-stock-zero { background:#fff8e6 !important; border-color:rgba(127,90,0,0.35) !important; }
+.variante-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border: 1px solid var(--border2);
+  border-radius: 10px; background: var(--surface);
+  transition: border-color 0.2s;
+}
+.variante-row:hover { border-color: var(--lav-300); }
+
+.var-img-cell {
+  width: 52px; height: 52px; border-radius: 8px;
+  border: 1.5px dashed var(--lav-300); background: var(--lav-100);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; overflow: hidden; flex-shrink: 0;
+  transition: border-color 0.18s;
+}
+.var-img-cell:hover { border-color: var(--lav-500); }
+.var-img-cell img { width: 52px; height: 52px; object-fit: cover; display: block; }
+.var-img-placeholder { font-size: 20px; opacity: 0.5; }
+
+.var-fields {
+  flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0;
+}
+.var-fields input {
+  width: 100%; padding: 7px 10px; border: 1px solid var(--border2);
+  border-radius: 8px; font-family: 'Outfit', sans-serif;
+  font-size: 13px; color: var(--text); background: white; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.var-fields input:focus { border-color: var(--lav-400); box-shadow: var(--glow); }
+.var-stock-row { display: flex; align-items: center; gap: 8px; }
+.var-stock-row label { font-size: 10.5px; color: var(--text-soft); white-space: nowrap; }
+.var-stock-row input { width: 80px !important; }
+.var-stock-zero { background: #fff8e6 !important; border-color: rgba(127,90,0,0.3) !important; }
+
   /* ── SWATCHES ── */
   .swatches-input { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; padding: 9px 10px; border: 1px solid var(--border2); border-radius: 10px; min-height: 50px; background: var(--surface); }
   .swatch-chip { display: flex; align-items: center; gap: 5px; background: var(--lav-100); border: 1px solid var(--border2); border-radius: 20px; padding: 3px 9px 3px 5px; font-size: 11.5px; color: var(--text-mid); }
@@ -389,6 +444,45 @@
   .filter-tab.active.f-nuevo      { background: #c0392b; border-color: #c0392b; }
   .filter-tab.active.f-en-proceso { background: var(--warning); border-color: var(--warning); }
   .filter-tab.active.f-completado { background: var(--success); border-color: var(--success); }
+
+  /* ── CATALOG: variant thumbs ── */
+.pd-var-thumbs {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.pd-var-thumb {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  cursor: pointer; position: relative;
+}
+.pd-var-thumb-img {
+  width: 52px; height: 52px; border-radius: 10px; overflow: hidden;
+  border: 2px solid transparent; transition: border-color 0.2s, transform 0.2s;
+  background: var(--lav-100);
+}
+.pd-var-thumb-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pd-var-thumb-initials {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif; font-size: 18px; color: var(--lav-500);
+}
+.pd-var-thumb:hover .pd-var-thumb-img { transform: scale(1.08); }
+.pd-var-thumb.selected .pd-var-thumb-img { border-color: var(--lav-500); }
+.pd-var-thumb.agotado .pd-var-thumb-img { opacity: 0.45; filter: grayscale(0.4); }
+.pd-var-thumb.agotado::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 20px;
+  border-radius: 10px; background: repeating-linear-gradient(
+    -45deg, transparent, transparent 3px, rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px
+  );
+}
+.pd-var-thumb-name {
+  font-size: 9px; color: var(--text-soft); text-align: center;
+  max-width: 52px; line-height: 1.2; word-break: break-word;
+}
+.pd-var-selected-info {
+  font-size: 12px; color: var(--text-mid); margin-bottom: 10px;
+  padding: 6px 10px; background: var(--lav-100); border-radius: 8px;
+  border: 1px solid var(--border2); min-height: 32px;
+  display: flex; align-items: center; gap: 6px;
+}
 
   .sort-select {
     padding: 6px 12px; border: 1px solid var(--border2); border-radius: 9px;
@@ -751,16 +845,24 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Tonos de Color</label>
-        <div class="swatches-input" id="swatchesInput">
-          <div class="swatch-add">
-            <input type="color" id="swatchColor" value="#8b66bc">
-            <button class="swatch-add-btn" onclick="addSwatch()">+ Agregar tono</button>
-          </div>
-        </div>
-        <input type="hidden" id="prodTonos">
-      </div>
+      <!-- VARIANTES / TONOS -->
+<div class="form-group">
+  <label>Variantes / Tonos <span style="color:var(--text-soft);font-weight:400">(imagen + stock por tono)</span></label>
+  <div id="variantesWrap" style="display:flex;flex-direction:column;gap:8px;"></div>
+  <button type="button" onclick="addVariante()"
+    style="margin-top:10px;width:100%;padding:9px;border:1.5px dashed var(--lav-300);
+           border-radius:10px;background:var(--lav-100);color:var(--lav-600);
+           font-family:'Outfit',sans-serif;font-size:12.5px;cursor:pointer;
+           transition:all 0.18s"
+    onmouseover="this.style.background='var(--lav-200)'"
+    onmouseout="this.style.background='var(--lav-100)'">
+    + Agregar variante
+  </button>
+  <input type="hidden" id="prodVariantes">
+  <small style="color:var(--text-soft);font-size:10.5px;margin-top:6px;display:block">
+    Sin variantes → usa disponibilidad general. Con variantes → cada tono tiene su propio stock e imagen.
+  </small>
+</div>
 
       <div class="form-group">
         <label>Tags / Características</label>
@@ -1185,6 +1287,7 @@ function openProductModal(prod = null) {
   tags           = prod?.tags  || [];
   extraImageUrls = (prod?.imagenes_extra && Array.isArray(prod.imagenes_extra)) ? [...prod.imagenes_extra] : [];
   extraImageFiles= [];
+  
   document.getElementById('productModalTitle').textContent = prod ? 'Editar Producto' : 'Nuevo Producto';
   document.getElementById('prodId').value        = prod?.id || '';
   document.getElementById('prodNombre').value    = prod?.nombre || '';
@@ -1208,6 +1311,10 @@ function openProductModal(prod = null) {
   }
   currentImageFile = null;
   onActivoChange(); // sync toggle state
+  variantes = (prod?.variantes && Array.isArray(prod.variantes))
+  ? prod.variantes.map(v => ({ ...v, _file: null, _preview: null }))
+  : [];
+renderVariantes();
   renderExtraImgs(); renderSwatches(); renderTags();
   openModal('productModal');
 }
@@ -1234,6 +1341,19 @@ async function saveProduct() {
     const activo  = document.getElementById('prodActivo').checked;
     const agotado = activo ? document.getElementById('prodAgotado').checked : false;
 
+    const finalVariantes = [];
+for (let i = 0; i < variantes.length; i++) {
+  const v = variantes[i];
+  if (!v.nombre.trim()) continue;
+  const vd = { id: v.id, nombre: v.nombre.trim(), imagen_url: v.imagen_url || '', stock: v.stock };
+  if (v._file) {
+    const url = await uploadImage(v._file, 'uploadProgress', 'uploadBar');
+    if (url) vd.imagen_url = url;
+  }
+  finalVariantes.push(vd);
+}
+
+
     const payload = {
       nombre, marca: document.getElementById('prodMarca').value.trim(),
       descripcion: document.getElementById('prodDesc').value.trim(),
@@ -1242,6 +1362,7 @@ async function saveProduct() {
       precio_anterior: parseFloat(document.getElementById('prodPrecioAnt').value) || 0,
       imagen_url: imageUrl || uploadedExtras[0] || null,
       imagenes_extra: uploadedExtras.length ? uploadedExtras : null,
+      variantes: finalVariantes.length ? finalVariantes : null,
       tonos: swatches, tags,
       activo, agotado
     };
@@ -1473,7 +1594,76 @@ function toast(msg, type = 'default') {
   clearTimeout(t._timer);
   t._timer = setTimeout(() => t.className = '', 3500);
 }
+/* ══ VARIANTES ══ */
+let variantes = [];
 
+function addVariante() {
+  variantes.push({ id: crypto.randomUUID(), nombre: '', imagen_url: '', stock: 10, _file: null, _preview: null });
+  renderVariantes();
+}
+
+function removeVariante(idx) {
+  variantes.splice(idx, 1);
+  renderVariantes();
+}
+
+function handleVarImg(idx, input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) return toast('Imagen muy grande (máx 5MB)', 'error');
+  variantes[idx]._file = file;
+  const r = new FileReader();
+  r.onload = e => { variantes[idx]._preview = e.target.result; renderVariantes(); };
+  r.readAsDataURL(file);
+}
+
+function setVarField(idx, field, val) {
+  variantes[idx][field] = field === 'stock' ? (parseInt(val) || 0) : val;
+  if (field === 'stock') {
+    const el = document.querySelector(`[data-vs="${idx}"]`);
+    if (el) el.classList.toggle('var-stock-zero', variantes[idx].stock === 0);
+  }
+}
+
+function renderVariantes() {
+  const wrap = document.getElementById('variantesWrap');
+  if (!variantes.length) {
+    wrap.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-soft);
+      font-size:12.5px;border:1px dashed var(--lav-300);border-radius:10px;
+      background:var(--lav-100)">Sin variantes — usa disponibilidad general</div>`;
+    return;
+  }
+  wrap.innerHTML = variantes.map((v, i) => `
+    <div class="variante-row">
+      <div class="var-img-thumb" onclick="document.getElementById('vfi_${i}').click()"
+           title="Cambiar imagen">
+        ${v._preview || v.imagen_url
+          ? `<img src="${v._preview || v.imagen_url}" alt="">`
+          : '📷'}
+        <input type="file" id="vfi_${i}" accept="image/*" style="display:none"
+               onchange="handleVarImg(${i},this)">
+      </div>
+      <div class="var-fields">
+        <input type="text" placeholder="Nombre del tono (ej: Rojo 01)"
+               value="${(v.nombre||'').replace(/"/g,'&quot;')}"
+               oninput="setVarField(${i},'nombre',this.value)">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:10.5px;color:var(--text-soft);white-space:nowrap">Stock:</span>
+          <input type="number" data-vs="${i}" value="${v.stock}" min="0"
+                 style="width:80px" class="${v.stock===0?'var-stock-zero':''}"
+                 oninput="setVarField(${i},'stock',this.value)">
+          ${v.stock === 0
+            ? `<span style="font-size:10px;color:#7f5a00;letter-spacing:0.5px">⚠ Agotado</span>`
+            : ''}
+        </div>
+      </div>
+      <button onclick="removeVariante(${i})"
+        style="background:#fdf2f0;border:1px solid rgba(192,57,43,0.2);color:#c0392b;
+               padding:5px 11px;border-radius:7px;cursor:pointer;font-size:11.5px;
+               font-family:'Outfit',sans-serif">✕</button>
+    </div>
+  `).join('');
+}
 /* ── BOOT ── */
 (async function boot() {
   initSupabase();
