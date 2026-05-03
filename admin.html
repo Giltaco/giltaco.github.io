@@ -40,36 +40,13 @@
   }
 
   html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Outfit', sans-serif;
-    background: var(--bg); color: var(--text);
-    min-height: 100vh; font-size: 14px;
-  }
-  body::before {
-    content: ''; position: fixed; inset: 0; z-index: 0;
-    background-image:
-      radial-gradient(ellipse 70% 50% at 85% 15%, rgba(169,140,212,0.10) 0%, transparent 65%),
-      radial-gradient(ellipse 50% 60% at 10% 85%, rgba(197,179,224,0.12) 0%, transparent 65%);
-    pointer-events: none;
-  }
+  body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: 0; background-image: radial-gradient(ellipse 70% 50% at 85% 15%, rgba(169,140,212,0.10) 0%, transparent 65%), radial-gradient(ellipse 50% 60% at 10% 85%, rgba(197,179,224,0.12) 0%, transparent 65%); pointer-events: none; }
 
   /* ── LOGIN ── */
-  #loginScreen {
-    min-height: 100vh; display: flex;
-    align-items: center; justify-content: center;
-    padding: 2rem; position: relative; z-index: 1;
-  }
-  .login-card {
-    background: var(--surface); border-radius: 24px;
-    padding: 52px 44px; width: 100%; max-width: 400px;
-    box-shadow: var(--shadow-lg); border: 1px solid var(--border);
-  }
-  .login-mark {
-    width: 52px; height: 52px; border-radius: 14px;
-    background: var(--lav-600);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 22px; position: relative; overflow: hidden;
-  }
+  #loginScreen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; position: relative; z-index: 1; }
+  .login-card { background: var(--surface); border-radius: 24px; padding: 52px 44px; width: 100%; max-width: 400px; box-shadow: var(--shadow-lg); border: 1px solid var(--border); }
+  .login-mark { width: 52px; height: 52px; border-radius: 14px; background: var(--lav-600); display: flex; align-items: center; justify-content: center; margin: 0 auto 22px; position: relative; overflow: hidden; }
   .login-mark::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 60% 35%, rgba(255,255,255,0.25), transparent 60%); }
   .login-mark svg { width: 28px; height: 28px; }
   .login-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 400; color: var(--lav-700); text-align: center; margin-bottom: 3px; }
@@ -78,35 +55,19 @@
   /* ── FORM ── */
   .form-group { margin-bottom: 14px; }
   .form-group label { display: block; font-size: 10px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--text-mid); margin-bottom: 6px; font-weight: 500; }
-  .form-group input, .form-group select, .form-group textarea {
-    width: 100%; padding: 11px 14px; border: 1px solid var(--border2); border-radius: 10px;
-    font-family: 'Outfit', sans-serif; font-size: 14px; color: var(--text);
-    background: var(--surface); outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-  }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px 14px; border: 1px solid var(--border2); border-radius: 10px; font-family: 'Outfit', sans-serif; font-size: 14px; color: var(--text); background: var(--surface); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
   .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--lav-400); box-shadow: var(--glow); }
   .form-group textarea { resize: vertical; min-height: 78px; }
-
-  .btn-primary {
-    width: 100%; padding: 12px; background: var(--lav-600); color: white;
-    border: none; border-radius: 10px; font-family: 'Outfit', sans-serif;
-    font-size: 13px; font-weight: 500; letter-spacing: 0.8px; cursor: pointer;
-    transition: all 0.22s; box-shadow: 0 4px 18px rgba(110,74,158,0.28); margin-top: 4px;
-  }
+  .btn-primary { width: 100%; padding: 12px; background: var(--lav-600); color: white; border: none; border-radius: 10px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 0.8px; cursor: pointer; transition: all 0.22s; box-shadow: 0 4px 18px rgba(110,74,158,0.28); margin-top: 4px; }
   .btn-primary:hover { background: var(--lav-700); transform: translateY(-1px); }
   .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
-
   .error-msg { background: #fdf2f0; color: var(--danger); border: 1px solid rgba(192,57,43,0.2); border-radius: 9px; padding: 9px 13px; font-size: 12.5px; margin-bottom: 14px; display: none; }
 
   /* ── APP ── */
   #app { display: none; min-height: 100vh; position: relative; z-index: 1; }
 
   /* ── SIDEBAR ── */
-  .sidebar {
-    position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar-w);
-    background: var(--surface); border-right: 1px solid var(--border);
-    display: flex; flex-direction: column; z-index: 100;
-    transition: transform 0.3s ease; box-shadow: var(--shadow-sm);
-  }
+  .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; transition: transform 0.3s ease; box-shadow: var(--shadow-sm); }
   .sidebar-head { padding: 22px 18px 18px; border-bottom: 1px solid var(--border); }
   .brand { display: flex; align-items: center; gap: 11px; }
   .brand-mark { width: 36px; height: 36px; border-radius: 10px; background: var(--lav-600); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; overflow: hidden; }
@@ -116,22 +77,11 @@
   .brand-label { font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-soft); margin-top: 1px; }
   .sidebar-nav { flex: 1; padding: 14px 10px; overflow-y: auto; }
   .nav-section { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-soft); padding: 12px 8px 6px; }
-  .nav-item {
-    display: flex; align-items: center; gap: 9px; padding: 10px 11px; border-radius: 9px;
-    cursor: pointer; font-size: 13.5px; color: var(--text-mid); transition: all 0.18s;
-    border: none; background: none; width: 100%; text-align: left;
-    font-family: 'Outfit', sans-serif; margin-bottom: 1px; position: relative;
-  }
+  .nav-item { display: flex; align-items: center; gap: 9px; padding: 10px 11px; border-radius: 9px; cursor: pointer; font-size: 13.5px; color: var(--text-mid); transition: all 0.18s; border: none; background: none; width: 100%; text-align: left; font-family: 'Outfit', sans-serif; margin-bottom: 1px; position: relative; }
   .nav-item:hover { background: var(--lav-100); color: var(--lav-600); }
   .nav-item.active { background: var(--lav-100); color: var(--lav-600); font-weight: 500; }
   .nav-icon { font-size: 15px; width: 20px; text-align: center; opacity: 0.85; }
-  .nav-badge {
-    margin-left: auto; background: #e55; color: white;
-    font-size: 10px; font-weight: 600; min-width: 18px; height: 18px;
-    border-radius: 20px; padding: 0 5px;
-    display: none; align-items: center; justify-content: center;
-    animation: badgePop 0.3s cubic-bezier(.4,0,.2,1) both;
-  }
+  .nav-badge { margin-left: auto; background: #e55; color: white; font-size: 10px; font-weight: 600; min-width: 18px; height: 18px; border-radius: 20px; padding: 0 5px; display: none; align-items: center; justify-content: center; animation: badgePop 0.3s cubic-bezier(.4,0,.2,1) both; }
   .nav-badge.visible { display: flex; }
   @keyframes badgePop { from{transform:scale(0)} to{transform:scale(1)} }
   .sidebar-footer { padding: 14px 10px; border-top: 1px solid var(--border); }
@@ -218,45 +168,20 @@
   .multi-img-count strong { color: var(--lav-600); }
 
   /* ══ VARIANTES ══ */
-  .variante-row {
-    display: flex; align-items: flex-start; gap: 10px;
-    padding: 12px; border: 1px solid var(--border2);
-    border-radius: 10px; background: var(--surface);
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
+  .variante-row { display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid var(--border2); border-radius: 10px; background: var(--surface); transition: border-color 0.2s, box-shadow 0.2s; }
   .variante-row:hover { border-color: var(--lav-300); box-shadow: var(--shadow-sm); }
-  .var-img-cell {
-    width: 60px; height: 60px; border-radius: 9px;
-    border: 1.5px dashed var(--lav-300); background: var(--lav-100);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; overflow: hidden; flex-shrink: 0;
-    transition: border-color 0.18s, background 0.18s;
-    font-size: 22px;
-  }
+  .var-img-cell { width: 60px; height: 60px; border-radius: 9px; border: 1.5px dashed var(--lav-300); background: var(--lav-100); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; flex-shrink: 0; transition: border-color 0.18s, background 0.18s; font-size: 22px; }
   .var-img-cell:hover { border-color: var(--lav-500); background: var(--lav-200); }
   .var-img-cell img { width: 60px; height: 60px; object-fit: cover; display: block; }
   .var-fields { flex: 1; display: flex; flex-direction: column; gap: 7px; min-width: 0; }
-  .var-fields input {
-    width: 100%; padding: 8px 10px; border: 1px solid var(--border2);
-    border-radius: 8px; font-family: 'Outfit', sans-serif;
-    font-size: 13px; color: var(--text); background: white; outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
+  .var-fields input { width: 100%; padding: 8px 10px; border: 1px solid var(--border2); border-radius: 8px; font-family: 'Outfit', sans-serif; font-size: 13px; color: var(--text); background: white; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
   .var-fields input:focus { border-color: var(--lav-400); box-shadow: var(--glow); }
   .var-stock-row { display: flex; align-items: center; gap: 8px; }
   .var-stock-row label { font-size: 10.5px; color: var(--text-soft); white-space: nowrap; }
   .var-stock-row input[type=number] { width: 88px !important; }
   .var-stock-zero { background: #fff8e6 !important; border-color: rgba(127,90,0,0.35) !important; }
-  .var-agotado-tag {
-    font-size: 9.5px; color: var(--agotado); letter-spacing: 0.5px;
-    background: #fff8e6; border: 1px solid rgba(127,90,0,0.2);
-    padding: 2px 8px; border-radius: 20px;
-  }
-  .variantes-empty {
-    text-align: center; padding: 22px; color: var(--text-soft);
-    font-size: 12.5px; border: 1px dashed var(--lav-300);
-    border-radius: 10px; background: var(--lav-100);
-  }
+  .var-agotado-tag { font-size: 9.5px; color: var(--agotado); letter-spacing: 0.5px; background: #fff8e6; border: 1px solid rgba(127,90,0,0.2); padding: 2px 8px; border-radius: 20px; }
+  .variantes-empty { text-align: center; padding: 22px; color: var(--text-soft); font-size: 12.5px; border: 1px dashed var(--lav-300); border-radius: 10px; background: var(--lav-100); }
   .var-upload-progress { background: var(--lav-200); border-radius: 4px; height: 3px; overflow: hidden; margin-top: 4px; display: none; }
   .var-upload-bar { height: 100%; background: var(--lav-500); border-radius: 4px; width: 0%; transition: width 0.3s; }
 
@@ -304,13 +229,7 @@
   .status-activo  { background: #e8f5e9; color: var(--success); border: 1px solid rgba(46,125,50,0.2); }
   .status-agotado { background: #fff8e6; color: var(--agotado); border: 1px solid rgba(127,90,0,0.2); }
   .status-oculto  { background: #fdf2f0; color: var(--danger);  border: 1px solid rgba(192,57,43,0.2); }
-
-  /* Variantes badge en tabla */
-  .var-badge {
-    display: inline-flex; align-items: center; gap: 3px;
-    font-size: 10px; background: var(--lav-100); color: var(--lav-600);
-    border: 1px solid var(--border2); padding: 2px 8px; border-radius: 20px;
-  }
+  .var-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; background: var(--lav-100); color: var(--lav-600); border: 1px solid var(--border2); padding: 2px 8px; border-radius: 20px; }
 
   /* ── SEARCH ── */
   .search-wrap { position: relative; }
@@ -601,9 +520,7 @@
   </main>
 </div>
 
-<!-- ══════════════════════════════════════
-     MODAL PRODUCTO
-══════════════════════════════════════ -->
+<!-- ══════════════════════════════════════ MODAL PRODUCTO ══════════════════════════════════════ -->
 <div class="modal-overlay" id="productModal">
   <div class="modal">
     <div class="modal-head">
@@ -663,12 +580,10 @@
           <input type="text" id="prodMarca" placeholder="Ej: e.l.f. Cosmetics">
         </div>
       </div>
-
       <div class="form-group">
         <label>Descripción</label>
         <textarea id="prodDesc" placeholder="Describe el producto..."></textarea>
       </div>
-
       <div class="form-row">
         <div class="form-group">
           <label>Categoría *</label>
@@ -679,7 +594,6 @@
           <input type="text" id="prodEmoji" placeholder="✦" maxlength="4">
         </div>
       </div>
-
       <div class="form-row">
         <div class="form-group">
           <label>Precio (MXN) — 0 = "Consultar"</label>
@@ -818,26 +732,15 @@ let pendingCount = 0;
 const MAX_EXTRA_IMGS = 20;
 
 /* ══════════════════════════════════════
-   VARIANTES — estado
+   VARIANTES
 ══════════════════════════════════════ */
 let variantes = [];
 
 function addVariante() {
-  variantes.push({
-    id:       crypto.randomUUID(),
-    nombre:   '',
-    imagen_url: '',
-    stock:    10,
-    _file:    null,
-    _preview: null
-  });
+  variantes.push({ id: crypto.randomUUID(), nombre: '', imagen_url: '', stock: 10, _file: null, _preview: null });
   renderVariantes();
 }
-
-function removeVariante(idx) {
-  variantes.splice(idx, 1);
-  renderVariantes();
-}
+function removeVariante(idx) { variantes.splice(idx, 1); renderVariantes(); }
 
 function handleVarImg(idx, input) {
   const file = input.files[0];
@@ -851,11 +754,7 @@ function handleVarImg(idx, input) {
 
 function setVarField(idx, field, val) {
   variantes[idx][field] = field === 'stock' ? (parseInt(val) || 0) : val;
-  if (field === 'stock') {
-    const el = document.querySelector(`[data-vs="${idx}"]`);
-    if (el) el.classList.toggle('var-stock-zero', variantes[idx].stock === 0);
-    renderVariantes(); // re-render para actualizar tag agotado
-  }
+  if (field === 'stock') renderVariantes();
 }
 
 function renderVariantes() {
@@ -867,60 +766,40 @@ function renderVariantes() {
   }
   wrap.innerHTML = variantes.map((v, i) => `
     <div class="variante-row">
-      <!-- Miniatura imagen -->
       <div class="var-img-cell" onclick="document.getElementById('vfi_${i}').click()" title="Cambiar imagen">
-        ${v._preview || v.imagen_url
-          ? `<img src="${v._preview || v.imagen_url}" alt="">`
-          : '📷'}
-        <input type="file" id="vfi_${i}" accept="image/*" style="display:none"
-               onchange="handleVarImg(${i},this)">
+        ${v._preview || v.imagen_url ? `<img src="${v._preview || v.imagen_url}" alt="">` : '📷'}
+        <input type="file" id="vfi_${i}" accept="image/*" style="display:none" onchange="handleVarImg(${i},this)">
       </div>
-      <!-- Campos -->
       <div class="var-fields">
-        <input type="text"
-               placeholder="Nombre del tono (ej: Rojo 01)"
-               value="${escAdmin(v.nombre)}"
+        <input type="text" placeholder="Nombre del tono (ej: Rojo 01)" value="${escAdmin(v.nombre)}"
                oninput="setVarField(${i},'nombre',this.value)">
         <div class="var-stock-row">
           <label>Stock:</label>
-          <input type="number"
-                 data-vs="${i}"
-                 value="${v.stock}"
-                 min="0"
+          <input type="number" data-vs="${i}" value="${v.stock}" min="0"
                  class="${v.stock === 0 ? 'var-stock-zero' : ''}"
                  oninput="setVarField(${i},'stock',this.value)">
           ${v.stock === 0 ? `<span class="var-agotado-tag">⚠ Agotado</span>` : ''}
         </div>
-        <!-- Barra de progreso individual -->
-        <div class="var-upload-progress" id="varProg_${i}">
-          <div class="var-upload-bar" id="varBar_${i}"></div>
-        </div>
+        <div class="var-upload-progress" id="varProg_${i}"><div class="var-upload-bar" id="varBar_${i}"></div></div>
       </div>
-      <!-- Eliminar -->
       <button onclick="removeVariante(${i})"
         style="background:#fdf2f0;border:1px solid rgba(192,57,43,0.2);color:#c0392b;
                padding:5px 10px;border-radius:7px;cursor:pointer;font-size:12px;
-               font-family:'Outfit',sans-serif;flex-shrink:0;align-self:flex-start;
-               margin-top:2px">✕</button>
+               font-family:'Outfit',sans-serif;flex-shrink:0;align-self:flex-start;margin-top:2px">✕</button>
     </div>
   `).join('');
 
-  // Sincronizar campo oculto
   document.getElementById('prodVariantes').value = JSON.stringify(
     variantes.map(v => ({ id: v.id, nombre: v.nombre, imagen_url: v.imagen_url, stock: v.stock }))
   );
 }
 
-function escAdmin(str) {
-  return (str||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
-}
+function escAdmin(str) { return (str||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function prodHasVariantes(p) { return Array.isArray(p.variantes) && p.variantes.length > 0; }
 
-/* Helper: determina si un producto usa variantes */
-function prodHasVariantes(p) {
-  return Array.isArray(p.variantes) && p.variantes.length > 0;
-}
-
-/* ── INIT ── */
+/* ══════════════════════════════════════
+   INIT / AUTH
+══════════════════════════════════════ */
 function initSupabase() { sc = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); }
 
 async function doLogin() {
@@ -936,7 +815,6 @@ async function doLogin() {
   if (error) { err.textContent = 'Credenciales incorrectas.'; err.style.display='block'; }
   else startApp();
 }
-
 async function doLogout() { await sc.auth.signOut(); location.reload(); }
 
 async function startApp() {
@@ -950,7 +828,9 @@ async function startApp() {
   setupRealtime();
 }
 
-/* ── DATA LOAD ── */
+/* ══════════════════════════════════════
+   DATA LOAD
+══════════════════════════════════════ */
 async function loadCategorias() {
   const { data } = await sc.from('categorias').select('*').order('orden');
   categorias = data || [];
@@ -965,7 +845,9 @@ async function loadPedidos() {
   updatePedidosBadge();
 }
 
-/* ── REALTIME ── */
+/* ══════════════════════════════════════
+   REALTIME
+══════════════════════════════════════ */
 function setupRealtime() {
   sc.channel('pedidos-realtime')
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pedidos' }, payload => {
@@ -989,7 +871,9 @@ function updatePedidosBadge() {
   document.getElementById('statPedidos').textContent = pendingCount;
 }
 
-/* ── NOTIF ── */
+/* ══════════════════════════════════════
+   NOTIF
+══════════════════════════════════════ */
 let notifTimer = null;
 function showNotif(title, body) {
   document.getElementById('notifTitle').textContent = title;
@@ -1000,7 +884,9 @@ function showNotif(title, body) {
 }
 function closeNotif() { document.getElementById('notifBanner').classList.remove('show'); }
 
-/* ── DASHBOARD ── */
+/* ══════════════════════════════════════
+   DASHBOARD
+══════════════════════════════════════ */
 function renderDashboard() {
   document.getElementById('statTotal').textContent    = productos.length;
   document.getElementById('statActivos').textContent  = productos.filter(p => p.activo && !isProductoAgotado(p)).length;
@@ -1024,16 +910,16 @@ function renderDashboard() {
     </tr>`).join('')}</tbody></table>`;
 }
 
-/* Determina si un producto está agotado (soporta variantes) */
 function isProductoAgotado(p) {
   if (prodHasVariantes(p)) return p.variantes.every(v => v.stock === 0);
   return p.agotado === true;
 }
 
+/* thumbHtml usa imagen_url del producto — igual que la tarjeta del catálogo */
 function thumbHtml(p) {
-  let src = p.imagen_url;
-  if (!src && prodHasVariantes(p) && p.variantes[0]?.imagen_url) src = p.variantes[0].imagen_url;
-  return src ? `<img src="${src}" alt="">` : (p.emoji || '✦');
+  return p.imagen_url
+    ? `<img src="${p.imagen_url}" alt="">`
+    : (p.emoji || '✦');
 }
 
 function productStatusPill(p) {
@@ -1042,7 +928,9 @@ function productStatusPill(p) {
   return `<span class="status-pill status-activo">✅ Activo</span>`;
 }
 
-/* ── PEDIDOS ── */
+/* ══════════════════════════════════════
+   PEDIDOS
+══════════════════════════════════════ */
 function setPedidoFilter(estado, el) {
   pedidoFilter = estado;
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
@@ -1087,19 +975,23 @@ function renderPedidos() {
 }
 
 function buildPedidoCard(p) {
-  const date    = new Date(p.created_at);
-  const dateStr = date.toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'}) + ' · ' + date.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  const date     = new Date(p.created_at);
+  const dateStr  = date.toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'}) + ' · ' + date.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
   const estadoCls = (p.estado||'nuevo').replace(/\s/g,'-');
-  const items   = Array.isArray(p.items) ? p.items : [];
-  const total   = p.total>0 ? `$${parseFloat(p.total).toLocaleString('es-MX')}` : 'A consultar';
-  const initials= (p.cliente_nombre||'C').charAt(0).toUpperCase();
+  const items    = Array.isArray(p.items) ? p.items : [];
+  const total    = p.total>0 ? `$${parseFloat(p.total).toLocaleString('es-MX')}` : 'A consultar';
+  const initials = (p.cliente_nombre||'C').charAt(0).toUpperCase();
 
+  /* Botones de cambio de estado */
   const statusBtns = [];
   if (p.estado!=='nuevo')      statusBtns.push(`<button class="btn btn-danger btn-sm" onclick="updatePedidoEstado('${p.id}','nuevo')">↩ Nuevo</button>`);
   if (p.estado!=='en-proceso') statusBtns.push(`<button class="btn btn-warning btn-sm" onclick="updatePedidoEstado('${p.id}','en-proceso')">🟡 En proceso</button>`);
   if (p.estado!=='completado') statusBtns.push(`<button class="btn btn-success btn-sm" onclick="updatePedidoEstado('${p.id}','completado')">✓ Completado</button>`);
 
   const waMsg = p.mensaje_wa ? `<a href="https://wa.me/?text=${encodeURIComponent(p.mensaje_wa)}" target="_blank" class="btn btn-outline btn-sm">💬 WhatsApp</a>` : '';
+
+  /* ── BOTÓN ELIMINAR PEDIDO ── */
+  const eliminarBtn = `<button class="btn btn-danger btn-sm" onclick="event.stopPropagation();eliminarPedido('${p.id}')">✕ Eliminar</button>`;
 
   return `<div class="pedido-card ${estadoCls}" id="pedido-${p.id}">
     <div class="pedido-head" onclick="togglePedido('${p.id}')">
@@ -1128,7 +1020,10 @@ function buildPedidoCard(p) {
           <span style="color:var(--text-soft)">x${it.qty||1} — ${it.precio>0?'$'+parseFloat(it.precio).toLocaleString('es-MX'):'Consultar'}</span>
         </div>`).join('')}
       </div>
-      <div class="pedido-actions">${statusBtns.join('')}${waMsg}</div>
+      <div class="pedido-actions">
+        ${statusBtns.join('')}${waMsg}
+        ${eliminarBtn}
+      </div>
     </div>
   </div>`;
 }
@@ -1149,7 +1044,35 @@ async function updatePedidoEstado(id, estado) {
   toast('Estado actualizado','success');
 }
 
-/* ── PRODUCTOS ── */
+/* ══════════════════════════════════════
+   ELIMINAR PEDIDO (admin)
+   Elimina de Supabase y actualiza DOM
+══════════════════════════════════════ */
+async function eliminarPedido(id) {
+  if (!confirm(`¿Eliminar este pedido? Esta acción no se puede deshacer.`)) return;
+  const { error } = await sc.from('pedidos').delete().eq('id', id);
+  if (error) return toast('Error al eliminar: ' + error.message, 'error');
+
+  /* Remover del array local y del DOM sin recargar */
+  pedidos = pedidos.filter(p => p.id !== id);
+  const el = document.getElementById('pedido-' + id);
+  if (el) {
+    el.style.transition = 'opacity 0.3s, transform 0.3s';
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(20px)';
+    setTimeout(() => el.remove(), 300);
+  }
+  updatePedidosBadge();
+  renderDashboard();
+  /* Actualizar contador */
+  const filtered = pedidoFilter === 'todos' ? pedidos : pedidos.filter(p => p.estado === pedidoFilter);
+  document.getElementById('pedidosCount').textContent = `${filtered.length} pedido${filtered.length!==1?'s':''}`;
+  toast('Pedido eliminado', 'success');
+}
+
+/* ══════════════════════════════════════
+   PRODUCTOS
+══════════════════════════════════════ */
 function renderProductos() {
   document.getElementById('prodCount').textContent = `${productos.length} producto${productos.length!==1?'s':''}`;
   const cf = document.getElementById('prodFilterCat');
@@ -1210,7 +1133,6 @@ function filterProducts() {
     }).join('')}</tbody></table>`;
 }
 
-/* ── TOGGLE RÁPIDO AGOTADO (solo sin variantes) ── */
 async function toggleAgotado(id, estaAgotado) {
   const newVal = !estaAgotado;
   const { error } = await sc.from('productos').update({ agotado: newVal }).eq('id', id);
@@ -1226,12 +1148,10 @@ function onActivoChange() {
   const activo = document.getElementById('prodActivo').checked;
   const rowAgotado = document.getElementById('toggleRowAgotado');
   if (!activo) {
-    rowAgotado.style.opacity = '0.4';
-    rowAgotado.style.pointerEvents = 'none';
+    rowAgotado.style.opacity = '0.4'; rowAgotado.style.pointerEvents = 'none';
     document.getElementById('prodAgotado').checked = false;
   } else {
-    rowAgotado.style.opacity = '1';
-    rowAgotado.style.pointerEvents = 'auto';
+    rowAgotado.style.opacity = '1'; rowAgotado.style.pointerEvents = 'auto';
   }
   updateEstadoPreview();
 }
@@ -1245,16 +1165,14 @@ function updateEstadoPreview() {
   else              { el.textContent = '✅ Activo y visible';                     el.style.color = 'var(--success)'; }
 }
 
-/* ── PRODUCT MODAL ── */
+/* ══════════════════════════════════════
+   PRODUCT MODAL
+══════════════════════════════════════ */
 function openProductModal(prod = null) {
-  /* Reset variantes */
-  variantes = (prod?.variantes && Array.isArray(prod.variantes))
-    ? prod.variantes.map(v => ({ ...v, _file: null, _preview: null }))
-    : [];
-
-  tags           = prod?.tags  || [];
+  variantes      = (prod?.variantes && Array.isArray(prod.variantes)) ? prod.variantes.map(v => ({ ...v, _file: null, _preview: null })) : [];
+  tags           = prod?.tags || [];
   extraImageUrls = (prod?.imagenes_extra && Array.isArray(prod.imagenes_extra)) ? [...prod.imagenes_extra] : [];
-  extraImageFiles= [];
+  extraImageFiles = [];
 
   document.getElementById('productModalTitle').textContent = prod ? 'Editar Producto' : 'Nuevo Producto';
   document.getElementById('prodId').value        = prod?.id || '';
@@ -1282,10 +1200,7 @@ function openProductModal(prod = null) {
   }
 
   currentImageFile = null;
-  onActivoChange();
-  renderVariantes();
-  renderExtraImgs();
-  renderTags();
+  onActivoChange(); renderVariantes(); renderExtraImgs(); renderTags();
   openModal('productModal');
 }
 
@@ -1301,25 +1216,21 @@ async function saveProduct() {
   btn.disabled = true; btn.textContent = 'Guardando...';
 
   try {
-    /* Imagen principal */
     let imageUrl = document.getElementById('prodImageUrl').value;
     if (currentImageFile) imageUrl = await uploadImage(currentImageFile,'uploadProgress','uploadBar') || imageUrl;
 
-    /* Galería extra */
     const uploadedExtras = [...extraImageUrls];
     for (const file of extraImageFiles) {
       const url = await uploadImage(file,'extraUploadProgress','extraUploadBar');
       if (url) uploadedExtras.push(url);
     }
 
-    /* ── Upload imágenes de variantes ── */
     const finalVariantes = [];
     for (let i = 0; i < variantes.length; i++) {
       const v = variantes[i];
-      if (!v.nombre.trim()) continue; // saltar variantes sin nombre
+      if (!v.nombre.trim()) continue;
       const vd = { id: v.id, nombre: v.nombre.trim(), imagen_url: v.imagen_url || '', stock: v.stock };
       if (v._file) {
-        /* Mostrar progreso individual */
         const progEl = document.getElementById(`varProg_${i}`);
         const barEl  = document.getElementById(`varBar_${i}`);
         if (progEl) progEl.style.display = 'block';
@@ -1332,7 +1243,6 @@ async function saveProduct() {
     }
 
     const activo  = document.getElementById('prodActivo').checked;
-    /* Con variantes: el campo agotado general se ignora (lo controla cada variante) */
     const agotado = activo && !finalVariantes.length ? document.getElementById('prodAgotado').checked : false;
 
     const payload = {
@@ -1346,9 +1256,7 @@ async function saveProduct() {
       imagen_url:      imageUrl || uploadedExtras[0] || null,
       imagenes_extra:  uploadedExtras.length ? uploadedExtras : null,
       variantes:       finalVariantes.length ? finalVariantes : null,
-      tags,
-      activo,
-      agotado
+      tags, activo, agotado
     };
 
     const pid = document.getElementById('prodId').value;
@@ -1376,7 +1284,9 @@ async function deleteProduct(id, nombre) {
   await loadProductos(); renderProductos(); renderDashboard();
 }
 
-/* ── IMAGES ── */
+/* ══════════════════════════════════════
+   IMAGES
+══════════════════════════════════════ */
 async function uploadImage(file, progressId, barId) {
   const ext      = file.name.split('.').pop();
   const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
@@ -1403,7 +1313,6 @@ function handleImgSelect(e) {
   };
   r.readAsDataURL(file);
 }
-
 function handleDragOver(e) { e.preventDefault(); document.getElementById('imgUploadArea').classList.add('drag-over'); }
 function handleDrop(e) {
   e.preventDefault(); document.getElementById('imgUploadArea').classList.remove('drag-over');
@@ -1429,15 +1338,14 @@ function removeImage() {
 
 /* ── EXTRA IMAGES ── */
 function handleExtraImgs(e) {
-  const files    = Array.from(e.target.files);
-  const current  = extraImageUrls.length + extraImageFiles.length;
-  const available= MAX_EXTRA_IMGS - current;
+  const files     = Array.from(e.target.files);
+  const current   = extraImageUrls.length + extraImageFiles.length;
+  const available = MAX_EXTRA_IMGS - current;
   if (available<=0) { toast(`Límite de ${MAX_EXTRA_IMGS} imágenes alcanzado`,'error'); return; }
   const toAdd = files.slice(0, available);
   if (files.length > available) toast(`Solo se agregarán ${available} imagen(es)`, 'default');
   toAdd.forEach(f => { if(f.size<=5*1024*1024) extraImageFiles.push(f); else toast(`"${f.name}" supera 5MB`,'error'); });
-  renderExtraImgs();
-  e.target.value = '';
+  renderExtraImgs(); e.target.value = '';
 }
 function removeExtraImg(type, idx) {
   if (type==='url') extraImageUrls.splice(idx,1); else extraImageFiles.splice(idx,1);
@@ -1476,7 +1384,9 @@ function renderTags() {
   document.getElementById('prodTags').value = JSON.stringify(tags);
 }
 
-/* ── CATEGORIAS ── */
+/* ══════════════════════════════════════
+   CATEGORIAS
+══════════════════════════════════════ */
 function renderCategorias() {
   const grid = document.getElementById('catGrid');
   if (!categorias.length) {
@@ -1535,7 +1445,9 @@ async function deleteCat(id, nombre) {
   renderCategorias(); renderProductos();
 }
 
-/* ── NAV ── */
+/* ══════════════════════════════════════
+   NAV & MODALS
+══════════════════════════════════════ */
 function showPage(name, navEl) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
@@ -1547,7 +1459,7 @@ function openModal(id)  { document.getElementById(id).classList.add('open');    
 function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) closeModal(o.id); }));
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('open'); }
-function closeSidebar()  { document.getElementById('sidebar').classList.remove('open');  document.getElementById('sidebarOverlay').classList.remove('open'); }
+function closeSidebar()  { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('open'); }
 
 function toast(msg, type='default') {
   const t = document.getElementById('toast');
@@ -1556,7 +1468,9 @@ function toast(msg, type='default') {
   t._timer = setTimeout(()=>t.className='', 3500);
 }
 
-/* ── BOOT ── */
+/* ══════════════════════════════════════
+   BOOT
+══════════════════════════════════════ */
 (async function boot() {
   initSupabase();
   const { data: { session } } = await sc.auth.getSession();
