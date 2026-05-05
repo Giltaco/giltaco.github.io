@@ -324,6 +324,48 @@
   @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
   .page { display: none; animation: fadeUp 0.32s ease both; }
   .page.active { display: block; }
+
+  /* ── DROPDOWN ACCIONES ── */
+  .action-dropdown { position: relative; display: inline-block; }
+  .action-menu-btn { background: var(--surface); border: 1px solid var(--border2); color: var(--text-mid); width: 28px; height: 28px; border-radius: 7px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all 0.18s; line-height: 1; font-family: 'Outfit', sans-serif; }
+  .action-menu-btn:hover { background: var(--lav-100); color: var(--lav-600); border-color: var(--lav-300); }
+  .action-menu { position: fixed; z-index: 9998; background: var(--surface); border: 1px solid var(--border2); border-radius: 12px; box-shadow: var(--shadow-lg); min-width: 190px; overflow: hidden; animation: fadeUp 0.18s ease both; }
+  .action-menu-item { display: flex; align-items: center; gap: 9px; width: 100%; padding: 10px 14px; border: none; background: none; font-family: 'Outfit', sans-serif; font-size: 12.5px; color: var(--text-mid); cursor: pointer; text-align: left; transition: background 0.15s, color 0.15s; }
+  .action-menu-item:hover { background: var(--lav-100); color: var(--lav-600); }
+  .action-menu-item.danger { color: var(--danger); }
+  .action-menu-item.danger:hover { background: #fdf2f0; color: var(--danger); }
+  .action-menu-sep { height: 1px; background: var(--border); margin: 4px 0; }
+  .action-menu-section { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-soft); padding: 8px 14px 4px; font-weight: 600; }
+
+  /* ── MODAL DETALLE PEDIDO ── */
+  #pedidoDetailModal .modal { max-width: 560px; }
+  .detail-section { margin-bottom: 20px; }
+  .detail-section-label { font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-soft); margin-bottom: 10px; font-weight: 600; }
+  .detail-client-row { display: flex; align-items: center; gap: 12px; }
+  .detail-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--lav-100); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; color: var(--lav-600); flex-shrink: 0; }
+  .detail-client-info strong { font-size: 15px; color: var(--lav-800); display: block; }
+  .detail-client-info span { font-size: 11.5px; color: var(--text-soft); }
+  .detail-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .detail-meta-cell { background: var(--lav-100); border-radius: 10px; padding: 10px 13px; border: 1px solid var(--border); }
+  .detail-meta-cell small { font-size: 9.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-soft); display: block; margin-bottom: 3px; }
+  .detail-meta-cell strong { font-size: 13px; color: var(--text); }
+  .detail-items-table { width: 100%; border-collapse: collapse; }
+  .detail-items-table th { font-size: 9.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-soft); padding: 7px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+  .detail-items-table td { padding: 10px 10px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text); vertical-align: middle; }
+  .detail-items-table tr:last-child td { border-bottom: none; }
+  .detail-total-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0 2px; border-top: 1px solid var(--border2); margin-top: 8px; }
+  .detail-total-row span { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-soft); }
+  .detail-total-row strong { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--lav-500); }
+  .detail-estado-selector { display: flex; gap: 8px; flex-wrap: wrap; }
+  .detail-estado-btn { flex: 1; min-width: 100px; padding: 9px 12px; border-radius: 9px; border: 1.5px solid var(--border2); background: var(--surface); font-family: 'Outfit', sans-serif; font-size: 11.5px; font-weight: 500; cursor: pointer; transition: all 0.2s; text-align: center; }
+  .detail-estado-btn:hover { border-color: var(--lav-300); background: var(--lav-100); }
+  .detail-estado-btn.sel-nuevo { background: #fdecea; border-color: rgba(192,57,43,0.35); color: #c0392b; }
+  .detail-estado-btn.sel-en-proceso { background: #fef3e2; border-color: rgba(230,126,34,0.35); color: var(--warning); }
+  .detail-estado-btn.sel-completado { background: #e8f5e9; border-color: rgba(46,125,50,0.35); color: var(--success); }
+
+  /* ── PEDIDO CARD HOVER ── */
+  .pedido-card { transition: box-shadow 0.2s, border-color 0.2s; }
+  .pedido-card:hover { box-shadow: var(--shadow-md); }
 </style>
 </head>
 <body>
@@ -711,6 +753,21 @@
   </div>
 </div>
 
+<!-- MODAL DETALLE PEDIDO -->
+<div class="modal-overlay" id="pedidoDetailModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-head">
+      <div class="modal-title" id="detailModalTitle">Detalle del Pedido</div>
+      <button class="modal-close" onclick="closeModal('pedidoDetailModal')">✕</button>
+    </div>
+    <div class="modal-body" id="pedidoDetailBody" style="padding:22px;max-height:70vh;overflow-y:auto"></div>
+    <div class="modal-footer" style="gap:8px">
+      <button class="btn btn-outline" onclick="closeModal('pedidoDetailModal')">Cerrar</button>
+      <button class="btn btn-danger btn-sm" onclick="detailEliminar()">✕ Eliminar pedido</button>
+    </div>
+  </div>
+</div>
+
 <!-- NOTIF & TOAST -->
 <div id="notifBanner">
   <button class="notif-close" onclick="closeNotif()">✕</button>
@@ -981,17 +1038,7 @@ function buildPedidoCard(p) {
   const items    = Array.isArray(p.items) ? p.items : [];
   const total    = p.total>0 ? `$${parseFloat(p.total).toLocaleString('es-MX')}` : 'A consultar';
   const initials = (p.cliente_nombre||'C').charAt(0).toUpperCase();
-
-  /* Botones de cambio de estado */
-  const statusBtns = [];
-  if (p.estado!=='nuevo')      statusBtns.push(`<button class="btn btn-danger btn-sm" onclick="updatePedidoEstado('${p.id}','nuevo')">↩ Nuevo</button>`);
-  if (p.estado!=='en-proceso') statusBtns.push(`<button class="btn btn-warning btn-sm" onclick="updatePedidoEstado('${p.id}','en-proceso')">🟡 En proceso</button>`);
-  if (p.estado!=='completado') statusBtns.push(`<button class="btn btn-success btn-sm" onclick="updatePedidoEstado('${p.id}','completado')">✓ Completado</button>`);
-
   const waMsg = p.mensaje_wa ? `<a href="https://wa.me/?text=${encodeURIComponent(p.mensaje_wa)}" target="_blank" class="btn btn-outline btn-sm">💬 WhatsApp</a>` : '';
-
-  /* ── BOTÓN ELIMINAR PEDIDO ── */
-  const eliminarBtn = `<button class="btn btn-danger btn-sm" onclick="event.stopPropagation();eliminarPedido('${p.id}')">✕ Eliminar</button>`;
 
   return `<div class="pedido-card ${estadoCls}" id="pedido-${p.id}">
     <div class="pedido-head" onclick="togglePedido('${p.id}')">
@@ -1002,10 +1049,10 @@ function buildPedidoCard(p) {
           <div class="pedido-meta">${dateStr} · ${items.length} producto${items.length!==1?'s':''}</div>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <span class="estado-badge estado-${estadoCls}">${estadoLabel(p.estado)}</span>
         <span class="pedido-price">${total}</span>
-        <span style="color:var(--text-soft);font-size:12px">▾</span>
+        <button class="action-menu-btn" onclick="event.stopPropagation();openActionMenu(this,'${p.id}')" title="Acciones">⋮</button>
       </div>
     </div>
     <div class="pedido-body">
@@ -1020,9 +1067,9 @@ function buildPedidoCard(p) {
           <span style="color:var(--text-soft)">x${it.qty||1} — ${it.precio>0?'$'+parseFloat(it.precio).toLocaleString('es-MX'):'Consultar'}</span>
         </div>`).join('')}
       </div>
-      <div class="pedido-actions">
-        ${statusBtns.join('')}${waMsg}
-        ${eliminarBtn}
+      <div class="pedido-actions" style="gap:8px">
+        <button class="btn btn-outline btn-sm" onclick="openPedidoDetail('${p.id}')">📋 Ver detalle</button>
+        ${waMsg}
       </div>
     </div>
   </div>`;
@@ -1046,14 +1093,11 @@ async function updatePedidoEstado(id, estado) {
 
 /* ══════════════════════════════════════
    ELIMINAR PEDIDO (admin)
-   Elimina de Supabase y actualiza DOM
 ══════════════════════════════════════ */
 async function eliminarPedido(id) {
   if (!confirm(`¿Eliminar este pedido? Esta acción no se puede deshacer.`)) return;
   const { error } = await sc.from('pedidos').delete().eq('id', id);
   if (error) return toast('Error al eliminar: ' + error.message, 'error');
-
-  /* Remover del array local y del DOM sin recargar */
   pedidos = pedidos.filter(p => p.id !== id);
   const el = document.getElementById('pedido-' + id);
   if (el) {
@@ -1064,10 +1108,194 @@ async function eliminarPedido(id) {
   }
   updatePedidosBadge();
   renderDashboard();
-  /* Actualizar contador */
   const filtered = pedidoFilter === 'todos' ? pedidos : pedidos.filter(p => p.estado === pedidoFilter);
   document.getElementById('pedidosCount').textContent = `${filtered.length} pedido${filtered.length!==1?'s':''}`;
   toast('Pedido eliminado', 'success');
+}
+
+/* ══════════════════════════════════════
+   DROPDOWN ACCIONES
+══════════════════════════════════════ */
+let _activeMenu = null;
+let _detailPedidoId = null;
+let _actionBusy = false;
+
+function openActionMenu(btn, pedidoId) {
+  closeActionMenus();
+  const p = pedidos.find(x => x.id === pedidoId);
+  if (!p) return;
+
+  const menu = document.createElement('div');
+  menu.className = 'action-menu';
+
+  const estadoOpts = [
+    { key: 'nuevo',      label: '🔴 Nuevo' },
+    { key: 'en-proceso', label: '🟡 En proceso' },
+    { key: 'completado', label: '🟢 Completado' },
+  ];
+
+  let html = `
+    <button class="action-menu-item" onclick="openPedidoDetail('${pedidoId}');closeActionMenus()">
+      <span>📋</span> Ver detalle
+    </button>
+    <div class="action-menu-sep"></div>
+    <div class="action-menu-section">Cambiar estado</div>`;
+
+  estadoOpts.forEach(opt => {
+    const isCur = p.estado === opt.key;
+    html += `<button class="action-menu-item" ${isCur ? 'disabled style="opacity:0.4;cursor:default"' : ''} onclick="accionCambiarEstado('${pedidoId}','${opt.key}');closeActionMenus()">${opt.label}</button>`;
+  });
+
+  html += `
+    <div class="action-menu-sep"></div>
+    <button class="action-menu-item danger" onclick="accionEliminar('${pedidoId}');closeActionMenus()">
+      <span>✕</span> Eliminar pedido
+    </button>`;
+
+  menu.innerHTML = html;
+  document.body.appendChild(menu);
+  _activeMenu = menu;
+
+  const rect = btn.getBoundingClientRect();
+  const menuH = 230;
+  const top = (rect.bottom + menuH > window.innerHeight) ? rect.top - menuH : rect.bottom + 4;
+  menu.style.top  = top + 'px';
+  menu.style.left = Math.min(rect.left, window.innerWidth - 200) + 'px';
+
+  setTimeout(() => document.addEventListener('click', closeActionMenusOutside, { once: true }), 0);
+}
+
+function closeActionMenus() {
+  if (_activeMenu) { _activeMenu.remove(); _activeMenu = null; }
+}
+function closeActionMenusOutside(e) {
+  if (_activeMenu && !_activeMenu.contains(e.target)) closeActionMenus();
+}
+
+async function accionCambiarEstado(id, estado) {
+  if (_actionBusy) return;
+  _actionBusy = true;
+  const { error } = await sc.from('pedidos').update({ estado }).eq('id', id);
+  _actionBusy = false;
+  if (error) return toast('Error: ' + error.message, 'error');
+  const idx = pedidos.findIndex(p => p.id === id);
+  if (idx > -1) pedidos[idx].estado = estado;
+  updatePedidosBadge(); renderPedidos(); renderDashboard();
+  toast('Estado actualizado', 'success');
+}
+
+async function accionEliminar(id) {
+  const p = pedidos.find(x => x.id === id);
+  const nombre = p?.cliente_nombre || 'este pedido';
+  if (!confirm(`¿Eliminar el pedido de "${nombre}"? Esta acción no se puede deshacer.`)) return;
+  if (_actionBusy) return;
+  _actionBusy = true;
+  const { error } = await sc.from('pedidos').delete().eq('id', id);
+  _actionBusy = false;
+  if (error) return toast('Error al eliminar: ' + error.message, 'error');
+  pedidos = pedidos.filter(p => p.id !== id);
+  const el = document.getElementById('pedido-' + id);
+  if (el) { el.style.transition = 'opacity 0.28s, transform 0.28s'; el.style.opacity = '0'; el.style.transform = 'translateX(20px)'; setTimeout(() => el.remove(), 280); }
+  updatePedidosBadge(); renderDashboard();
+  const filtered = pedidoFilter === 'todos' ? pedidos : pedidos.filter(p => p.estado === pedidoFilter);
+  document.getElementById('pedidosCount').textContent = `${filtered.length} pedido${filtered.length !== 1 ? 's' : ''}`;
+  toast('Pedido eliminado', 'success');
+}
+
+/* ══════════════════════════════════════
+   MODAL DETALLE PEDIDO
+══════════════════════════════════════ */
+function openPedidoDetail(id) {
+  const p = pedidos.find(x => x.id === id);
+  if (!p) return;
+  _detailPedidoId = id;
+  document.getElementById('detailModalTitle').textContent = `Pedido — ${p.cliente_nombre || 'Cliente'}`;
+  const items  = Array.isArray(p.items) ? p.items : [];
+  const total  = p.total > 0 ? `$${parseFloat(p.total).toLocaleString('es-MX')} MXN` : 'A consultar';
+  const date   = new Date(p.created_at);
+  const dateStr = date.toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const timeStr = date.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+
+  const estadoMap = {
+    'nuevo':      { cls: 'sel-nuevo',      label: '🔴 Nuevo' },
+    'en-proceso': { cls: 'sel-en-proceso', label: '🟡 En proceso' },
+    'completado': { cls: 'sel-completado', label: '🟢 Completado' },
+  };
+
+  const estadoBtns = ['nuevo','en-proceso','completado'].map(k => {
+    const m = estadoMap[k];
+    const isCur = p.estado === k;
+    return `<button class="detail-estado-btn ${isCur ? m.cls : ''}" onclick="detailCambiarEstado('${k}')">${m.label}</button>`;
+  }).join('');
+
+  const rowsHtml = items.length
+    ? items.map(it => {
+        const tonoHtml = it.tono ? `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${it.tono};vertical-align:middle;border:1px solid rgba(0,0,0,0.1);margin-right:4px"></span>` : '';
+        const varHtml = it.variante_nombre ? `<span style="font-size:10.5px;color:var(--lav-600);background:var(--lav-100);border:1px solid var(--border2);padding:1px 7px;border-radius:20px;margin-left:5px">${it.variante_nombre}</span>` : '';
+        const precio = it.precio > 0 ? `$${parseFloat(it.precio).toLocaleString('es-MX')}` : 'Consultar';
+        return `<tr>
+          <td><strong>${it.producto_nombre||it.nombre||'—'}</strong>${varHtml}${it.marca?`<br><small style="color:var(--text-soft)">${it.marca}</small>`:''}</td>
+          <td style="text-align:center;color:var(--text-mid)">${it.qty||1}</td>
+          <td style="text-align:right;font-family:'Playfair Display',serif;color:var(--lav-500)">${tonoHtml}${precio}</td>
+        </tr>`;
+      }).join('')
+    : `<tr><td colspan="3" style="color:var(--text-soft);text-align:center;padding:18px">Sin items registrados</td></tr>`;
+
+  document.getElementById('pedidoDetailBody').innerHTML = `
+    <div class="detail-section">
+      <div class="detail-client-row">
+        <div class="detail-avatar">${(p.cliente_nombre||'C').charAt(0).toUpperCase()}</div>
+        <div class="detail-client-info">
+          <strong>${p.cliente_nombre||'—'}</strong>
+          <span>${p.cliente_telefono||'Sin teléfono'}</span>
+        </div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-meta-grid">
+        <div class="detail-meta-cell"><small>Fecha</small><strong>${dateStr}</strong></div>
+        <div class="detail-meta-cell"><small>Hora</small><strong>${timeStr}</strong></div>
+        <div class="detail-meta-cell"><small>Estado actual</small><strong>${estadoMap[p.estado]?.label||p.estado}</strong></div>
+        <div class="detail-meta-cell"><small>ID Pedido</small><strong style="font-size:10px;word-break:break-all">${p.id}</strong></div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-label">Productos</div>
+      <table class="detail-items-table">
+        <thead><tr><th>Producto</th><th style="text-align:center">Qty</th><th style="text-align:right">Precio</th></tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+      <div class="detail-total-row"><span>Total estimado</span><strong>${total}</strong></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-label">Cambiar estado</div>
+      <div class="detail-estado-selector" id="detailEstadoBtns">${estadoBtns}</div>
+    </div>`;
+
+  openModal('pedidoDetailModal');
+}
+
+async function detailCambiarEstado(estado) {
+  if (!_detailPedidoId || _actionBusy) return;
+  _actionBusy = true;
+  const { error } = await sc.from('pedidos').update({ estado }).eq('id', _detailPedidoId);
+  _actionBusy = false;
+  if (error) return toast('Error: ' + error.message, 'error');
+  const idx = pedidos.findIndex(p => p.id === _detailPedidoId);
+  if (idx > -1) pedidos[idx].estado = estado;
+  const estadoMap = { 'nuevo':'sel-nuevo','en-proceso':'sel-en-proceso','completado':'sel-completado' };
+  const keys = ['nuevo','en-proceso','completado'];
+  document.querySelectorAll('#detailEstadoBtns .detail-estado-btn').forEach((btn, i) => {
+    btn.className = 'detail-estado-btn' + (keys[i] === estado ? ' ' + estadoMap[estado] : '');
+  });
+  updatePedidosBadge(); renderPedidos(); renderDashboard();
+  toast('Estado actualizado', 'success');
+}
+
+async function detailEliminar() {
+  if (!_detailPedidoId) return;
+  closeModal('pedidoDetailModal');
+  await accionEliminar(_detailPedidoId);
 }
 
 /* ══════════════════════════════════════
